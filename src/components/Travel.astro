@@ -1,0 +1,172 @@
+---
+import SheetHead from './SheetHead.astro';
+
+const tabs = [
+  {
+    id: 'pty',
+    label: 'Desde Panamá',
+    route: [
+      { code: 'PTY', city: 'Panamá' },
+      { code: 'MAD', city: 'Madrid', leg: '~10 h · directo' },
+      { code: 'IBZ', city: 'Ibiza', leg: '~1 h 15' },
+    ],
+    tips: [
+      ['Vuelos', 'Hay vuelos directos Panamá–Madrid (Iberia y Air Europa) y desde Madrid salen varios al día a Ibiza (Iberia, Air Europa, Vueling, Ryanair). También hay opciones con escala en otras ciudades europeas.'],
+      ['Diferencia horaria', 'En octubre, Ibiza va 7 horas por delante de Panamá. Llegad un par de días antes y el jet lag se queda en el avión.'],
+      ['Documentación', 'Pasaporte en vigor. Para estancias cortas no hace falta visado, pero comprobad antes de viajar si ya se exige la autorización ETIAS.'],
+      ['Enchufes y dinero', 'En España los enchufes son tipo C/F a 230 V: traed adaptador. Se paga en euros y con tarjeta en casi todas partes.'],
+    ],
+  },
+  {
+    id: 'bcn',
+    label: 'Desde Barcelona',
+    route: [
+      { code: 'BCN', city: 'Barcelona' },
+      { code: 'IBZ', city: 'Ibiza', leg: '~1 h · directo' },
+    ],
+    tips: [
+      ['Avión', 'Vuelos directos varias veces al día (Vueling, Ryanair y otras). Si reserváis con tiempo, salen bien de precio.'],
+      ['Ferry', 'También hay barco nocturno Barcelona–Ibiza (Baleària, Trasmed), de unas 8–9 h. Puede ir con coche.'],
+      ['Documentación', 'Con el DNI es suficiente.'],
+    ],
+  },
+  {
+    id: 'isla',
+    label: 'Por la isla',
+    route: [
+      { code: 'IBZ', city: 'Aeropuerto' },
+      { code: 'STC', city: 'Sant Carles', leg: '~30 min en coche' },
+    ],
+    tips: [
+      ['Coche', 'Muy recomendable alquilar coche: Sant Carles está en el noreste y el autobús no llega a todas partes.'],
+      ['Taxi', 'De noche hay pocos. Si los necesitáis, reservad con antelación.'],
+      ['El día de la boda', '[PENDIENTE] Estamos organizando el transporte entre la iglesia, Can Curreu y la vuelta a casa.'],
+    ],
+  },
+];
+
+const zones = [
+  { name: 'Santa Eulària des Riu', dist: '~10 min', text: 'Pueblo con paseo marítimo, playa y muchos restaurantes. Nuestra recomendación principal.' },
+  { name: 'Sant Carles y alrededores', dist: '~5 min', text: 'Agroturismos y casas rurales entre pinos. Tranquilidad total.' },
+  { name: 'Es Canar · Cala Llonga', dist: '~10–15 min', text: 'Hoteles junto al mar, buena opción para familias.' },
+  { name: 'Ibiza ciudad', dist: '~25 min', text: 'Más oferta y ambiente, con Dalt Vila y el puerto a mano.' },
+];
+---
+<section id="viaje" class="travel section--flush" data-flush data-section="viaje">
+  <SheetHead
+    n={6}
+    label="Accesos y logística"
+    title={'Viaje y\nalojamiento'}
+    sub="Vendrá gente de Panamá, de Barcelona y de donde haga falta. Aquí tenéis cómo llegar y dónde dormir cerca de la boda."
+  />
+  <div class="sheet-content">
+
+    <div class="tabs" data-tabs>
+      <div class="tabs__list" role="tablist" aria-label="Origen del viaje">
+        {tabs.map((t, i) => (
+          <button role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} class="tabs__tab mono" data-tab={t.id}>
+            {t.label}
+          </button>
+        ))}
+        <span class="tabs__ink" data-tabs-ink aria-hidden="true"></span>
+      </div>
+
+      {tabs.map((t, i) => (
+        <div role="tabpanel" id={`panel-${t.id}`} aria-labelledby={`tab-${t.id}`} class="tabs__panel" data-panel={t.id} hidden={i !== 0}>
+          <div class="route" aria-label={`Ruta: ${t.route.map((r) => r.city).join(' → ')}`}>
+            {t.route.map((r, j) => (
+              <>
+                {j > 0 && (
+                  <div class="route__leg">
+                    <span class="route__line" aria-hidden="true"><svg viewBox="0 0 24 24" class="route__plane"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5Z" /></svg></span>
+                    <span class="mono route__time">{r.leg}</span>
+                  </div>
+                )}
+                <div class="route__stop">
+                  <span class="route__code">{r.code}</span>
+                  <span class="mono route__city">{r.city}</span>
+                </div>
+              </>
+            ))}
+          </div>
+          <dl class="tips">
+            {t.tips.map(([k, v]) => (
+              <div class="tips__row">
+                <dt class="mono">{k}</dt>
+                <dd>{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      ))}
+    </div>
+
+    <div class="stay">
+      <div class="stay__head">
+        <h3 class="h3">Dónde dormir</h3>
+        <p class="mono stay__meta">Distancias en coche hasta Sant Carles</p>
+      </div>
+      <div class="stay__grid">
+        {zones.map((z, i) => (
+          <article class="zone" data-reveal>
+            <div class="zone__top mono"><span>Zona {String.fromCharCode(65 + i)}</span><span class="red">{z.dist}</span></div>
+            <h4 class="zone__name">{z.name}</h4>
+            <p class="zone__text">{z.text}</p>
+          </article>
+        ))}
+        <article class="zone zone--soon" data-reveal data-cuqui-hover="Estoy negociando descuentos. Pago en latas.">
+          <div class="zone__top mono"><span>Recomendados</span><span>En obras</span></div>
+          <h4 class="zone__name">Hoteles y casas</h4>
+          <p class="zone__text">Pronto pondremos aquí sitios concretos y, si podemos, algún descuento para invitados.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tabs__list { position: relative; display: flex; gap: 0; border-bottom: 1px solid var(--line-strong); overflow-x: auto; scrollbar-width: none; }
+  .tabs__list::-webkit-scrollbar { display: none; }
+  .tabs__tab {
+    flex: 1 0 auto; min-height: 52px; padding: 0 18px; background: none; border: 0; color: var(--ink-3);
+    transition: color .3s;
+  }
+  .tabs__tab[aria-selected='true'] { color: var(--ink); }
+  .tabs__ink { position: absolute; left: 0; bottom: -1px; height: 3px; background: var(--red); width: 0; transition: transform .5s var(--ease), width .5s var(--ease); }
+  .tabs__panel { padding-top: clamp(28px, 4vw, 48px); }
+
+  .route { display: flex; align-items: center; gap: 12px; margin-bottom: clamp(28px, 4vw, 48px); }
+  .route__stop { display: grid; flex: none; }
+  .route__code { font-size: clamp(2.4rem, 9vw, 6rem); line-height: .9; font-weight: 500; letter-spacing: -0.02em; }
+  .route__city { color: var(--ink-3); }
+  .route__leg { flex: 1; display: grid; gap: 6px; min-width: 40px; }
+  .route__line { position: relative; height: 18px; display: block; }
+  .route__line::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; border-top: 1.5px dashed var(--ink); }
+  .route__plane { position: absolute; top: 0; left: 0; width: 18px; height: 18px; fill: var(--red); transform: rotate(90deg); animation: fly 3.2s var(--ease) infinite; }
+  @keyframes fly { from { left: 0; } to { left: calc(100% - 18px); } }
+  .route__time { color: var(--ink-2); font-size: 10.5px; text-align: center; }
+
+  .tips { margin: 0; display: grid; }
+  .tips__row { display: grid; gap: 4px; padding: 16px 0; border-top: 1px solid var(--line); }
+  .tips dt { color: var(--red); }
+  .tips dd { margin: 0; color: var(--ink-2); max-width: 64ch; }
+
+  .stay { margin-top: clamp(56px, 8vw, 110px); }
+  .stay__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+  .stay__head .h3 { font-size: clamp(1.8rem, 4vw, 3rem); text-transform: uppercase; font-weight: 500; }
+  .stay__meta { color: var(--ink-3); margin: 0; }
+  .stay__grid { display: grid; gap: 12px; }
+  .zone { border: 1px solid var(--line-strong); padding: 16px; display: grid; gap: 8px; background: color-mix(in srgb, var(--paper) 70%, white); }
+  .zone__top { display: flex; justify-content: space-between; }
+  .zone__name { margin: 0; font-size: 1.3rem; font-weight: 600; text-transform: uppercase; line-height: 1.1; }
+  .zone__text { margin: 0; color: var(--ink-2); }
+  .zone--soon { border-style: dashed; background: transparent; }
+
+  @media (min-width: 760px) {
+    .tabs__tab { flex: 0 0 auto; padding: 0 28px; }
+    .tips { grid-template-columns: 1fr 1fr; column-gap: 40px; }
+    .tips__row { grid-template-columns: 160px 1fr; }
+    .stay__grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (prefers-reduced-motion: reduce) { .route__plane { animation: none; left: 50%; } }
+</style>

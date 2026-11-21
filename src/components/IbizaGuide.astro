@@ -1,0 +1,137 @@
+---
+import SheetHead from './SheetHead.astro';
+import { spots, spotCats } from '../data/site';
+const catLabel = Object.fromEntries(spotCats.map((c) => [c.id, c.label]));
+---
+<section id="ibiza" class="guide section--flush" data-flush data-section="ibiza">
+  <SheetHead
+    n={7}
+    label="Entorno · guía de la isla"
+    title={'Qué hacer\nen Ibiza'}
+    sub="Si venís de lejos, quedaos unos días. Estos son nuestros sitios: una ciudad amurallada, calas que nos encantan y dos atardeceres que no hay que perderse."
+    scale="E 1:200.000"
+  />
+  <div class="sheet-content">
+    <div class="guide__body">
+      <div class="guide__side">
+        <div class="guide__filters" role="toolbar" aria-label="Filtrar lugares">
+          {spotCats.map((c, i) => (
+            <button class:list={['chip mono', { 'is-on': i === 0 }]} data-filter={c.id} aria-pressed={i === 0 ? 'true' : 'false'}>{c.label}</button>
+          ))}
+        </div>
+        <div class="guide__mapwrap">
+          <div class="guide__map" data-map data-spots={JSON.stringify(spots)} aria-label="Mapa de Ibiza con los lugares recomendados" role="region">
+            <div class="guide__map-ph mono">Cargando cartografía…</div>
+          </div>
+          <span class="guide__corner mono" aria-hidden="true">39°N · 1°E</span>
+        </div>
+      </div>
+
+      <ol class="guide__list" data-spot-list>
+        {spots.map((s, i) => (
+          <li class:list={['spot', { 'is-soon': s.soon }]} data-spot={s.id} data-cat={s.cat}>
+            <button class="spot__btn" data-spot-btn={s.id} data-cursor="paw">
+              <span class="spot__n mono">{String(i + 1).padStart(2, '0')}</span>
+              <span class="spot__body">
+                <span class="spot__cat mono">{catLabel[s.cat]}</span>
+                <span class="spot__name">{s.name}</span>
+                <span class="spot__text">{s.text}</span>
+              </span>
+            </button>
+            {!s.soon && (
+              <a class="spot__go mono" href={`https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}`} target="_blank" rel="noopener">Maps ↗</a>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .guide .sheet-content { padding: 0; }
+  :global(.guide .sheet-content) { padding: 0; }
+  .guide__body { display: grid; }
+  .guide__side { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+
+  /* Filtros: tira pegada arriba, sin huecos, como los botones del carrusel */
+  .guide__filters { display: flex; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--frame-line, var(--line-strong)); background: var(--paper); }
+  .guide__filters::-webkit-scrollbar { display: none; }
+  .chip {
+    position: relative; flex: 1 0 auto; min-height: 56px; padding: 0 20px;
+    background: none; border: 0; border-right: 1px solid var(--frame-line, var(--line-strong)); border-radius: 0;
+    color: var(--ink); overflow: hidden; isolation: isolate; white-space: nowrap;
+    transition: color .4s var(--ease);
+  }
+  .chip:last-child { border-right: 0; }
+  .chip::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; background: var(--red);
+    transform: translateY(101%); border-radius: 50% 50% 0 0;
+    transition: transform .5s var(--ease), border-radius .5s var(--ease);
+  }
+  .chip:hover, .chip:focus-visible, .chip.is-on { color: #fff; }
+  .chip:hover::before, .chip:focus-visible::before, .chip.is-on::before { transform: translateY(0); border-radius: 0; }
+
+  .guide__mapwrap { position: relative; min-height: 0; }
+  .guide__map { height: min(60vh, 110vw); min-height: 320px; background: var(--paper); }
+  .guide__map-ph { display: grid; place-items: center; height: 100%; color: var(--ink-3); }
+  .guide__corner { position: absolute; left: 0; bottom: 0; z-index: 500; background: var(--paper); padding: 6px 10px; border-top: 1px solid var(--frame-line, var(--line-strong)); border-right: 1px solid var(--frame-line, var(--line-strong)); font-size: 10px; }
+
+  /* Móvil: carrusel horizontal sin huecos */
+  .guide__list {
+    list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--frame-line, var(--line-strong));
+    display: grid; grid-auto-flow: column; grid-auto-columns: 82%;
+    overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain;
+  }
+  .guide__list::-webkit-scrollbar { display: none; }
+  .spot {
+    scroll-snap-align: start; position: relative; background: var(--paper);
+    border-right: 1px solid var(--frame-line, var(--line-strong));
+    transition: background .3s;
+  }
+  .spot[hidden] { display: none; }
+  .spot.is-active { background: var(--paper-2); }
+  .spot.is-soon { background: transparent; }
+  .spot__btn {
+    display: grid; grid-template-columns: auto 1fr; gap: 12px; text-align: left;
+    width: 100%; height: 100%; padding: 18px var(--pad-x) 44px; background: none; border: 0;
+  }
+  .spot__n { color: var(--red); padding-top: 3px; }
+  .spot__body { display: grid; gap: 4px; }
+  .spot__cat { color: var(--ink-3); font-size: 10px; }
+  .spot__name { font-size: 1.35rem; font-weight: 600; line-height: 1.1; text-transform: uppercase; }
+  .spot__text { color: var(--ink-2); font-size: .98rem; }
+  .spot__go { position: absolute; right: var(--pad-x); bottom: 14px; text-decoration: none; border-bottom: 1px solid currentColor; }
+  .spot__go:hover { color: var(--red); }
+
+  @media (min-width: 900px) {
+    .guide__body { grid-template-columns: 1.35fr 1fr; align-items: start; }
+    .guide__side {
+      position: sticky; top: var(--nav-h); height: calc(100vh - var(--nav-h));
+      border-right: 1px solid var(--frame-line, var(--line-strong));
+    }
+    .guide__map { height: 100%; min-height: 0; }
+    .guide__list { border-top: 0; grid-auto-flow: row; grid-auto-columns: auto; overflow: visible; scroll-snap-type: none; }
+    .spot { border-right: 0; border-bottom: 1px solid var(--frame-line, var(--line-strong)); }
+    .guide__list { margin-bottom: -1px; }
+  }
+
+  /* Leaflet (estilos globales para los pines) */
+  :global(.leaflet-container) { font-family: var(--f-sans); background: var(--paper); }
+  :global(.guide .leaflet-tile-pane) { filter: grayscale(.3) saturate(.9) contrast(.82) brightness(1.14); }
+  :global(.pin) {
+    display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg); background: var(--ink); color: var(--paper); border: 2px solid var(--paper);
+    box-shadow: 2px 3px 0 rgba(0,0,0,.25); transition: background .3s, transform .3s;
+  }
+  :global(.pin span) { transform: rotate(45deg); font: 500 10px/1 var(--f-mono); }
+  :global(.pin--boda) { background: var(--red); }
+  :global(.pin--calas) { background: var(--sea); }
+  :global(.pin--sunset) { background: #c9782f; }
+  :global(.pin--comer) { background: var(--olive); }
+  :global(.pin.is-active) { transform: rotate(-45deg) scale(1.3); }
+  :global(.leaflet-popup-content-wrapper) { border-radius: 2px; border: 1.5px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); background: var(--paper); }
+  :global(.leaflet-popup-tip) { background: var(--paper); }
+  :global(.leaflet-popup-content) { margin: 12px 14px; font-size: 14px; }
+  :global(.leaflet-popup-content b) { display: block; text-transform: uppercase; font-size: 15px; }
+</style>

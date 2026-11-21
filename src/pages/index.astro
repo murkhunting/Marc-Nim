@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Marquee from '../components/Marquee.astro';
+import Story from '../components/Story.astro';
+import Location from '../components/Location.astro';
+import Itinerary from '../components/Itinerary.astro';
+import DressCode from '../components/DressCode.astro';
+import IbizaGuide from '../components/IbizaGuide.astro';
+import Travel from '../components/Travel.astro';
+import Faq from '../components/Faq.astro';
+import Rsvp from '../components/Rsvp.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base>
+  <!-- Sprite de la huella (se reutiliza con <use href="#paw">) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="paw" viewBox="0 0 64 64">
+      <path d="M32 31c-8.5 0-16 8.6-16 15.4C16 52 21 54 25.2 54c3 0 4.6-1.4 6.8-1.4s3.8 1.4 6.8 1.4C43 54 48 52 48 46.4 48 39.6 40.5 31 32 31Z"/>
+      <ellipse cx="14" cy="27" rx="5.6" ry="7.2" transform="rotate(-18 14 27)"/>
+      <ellipse cx="25" cy="15.5" rx="5.8" ry="7.6" transform="rotate(-6 25 15.5)"/>
+      <ellipse cx="39" cy="15.5" rx="5.8" ry="7.6" transform="rotate(6 39 15.5)"/>
+      <ellipse cx="50" cy="27" rx="5.6" ry="7.2" transform="rotate(18 50 27)"/>
+    </symbol>
+  </svg>
+
+  <Hero />
+  {/* Banner oculto (para recuperarlo, quita los comentarios): <Marquee items={['Nos casamos', '16.10.2027', 'Ibiza', 'Sant Carles', 'Aprobado por Orión']} /> */}
+  <Story />
+  <Location />
+  <Itinerary />
+  <DressCode />
+  <Travel />
+  <IbizaGuide />
+  <Faq />
+  <Rsvp />
+  <Footer />
+</Base>

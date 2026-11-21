@@ -1,0 +1,55 @@
+---
+import Paw from './Paw.astro';
+---
+<div class="cursor" data-cursor-el aria-hidden="true">
+  <div class="cursor__ring"></div>
+  <Paw class="cursor__paw" />
+  <span class="cursor__label mono" data-cursor-label></span>
+  <span class="cursor__xy mono" data-cursor-xy>X 0000 · Y 0000</span>
+</div>
+<div class="cursor-cross" data-cursor-cross aria-hidden="true"><i class="h"></i><i class="v"></i></div>
+
+<style>
+  .cursor, .cursor-cross { display: none; }
+  @media (hover: hover) and (pointer: fine) {
+    html.has-cursor .cursor, html.has-cursor .cursor-cross { display: block; }
+  }
+  .cursor {
+    position: fixed; left: 0; top: 0; z-index: 1900; pointer-events: none;
+    width: 0; height: 0;
+  }
+  .cursor__ring {
+    position: absolute; width: 14px; height: 14px; left: -7px; top: -7px;
+    border: 1.5px solid var(--ink); border-radius: 50%;
+    background: transparent;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.55);
+    transition: width .35s var(--ease-out), height .35s var(--ease-out), left .35s var(--ease-out), top .35s var(--ease-out), background .3s, border-color .3s, opacity .3s;
+  }
+  .cursor__paw {
+    position: absolute; width: 30px; height: 30px; left: -15px; top: -15px; color: var(--ink);
+    transform: scale(0) rotate(-30deg); transition: transform .4s var(--ease-out);
+  }
+  .cursor__label {
+    position: absolute; left: 0; top: 0; transform: translate(-50%, -50%) scale(0);
+    background: var(--red); color: var(--paper); padding: 6px 10px; border-radius: 999px; white-space: nowrap;
+    transition: transform .35s var(--ease-out);
+  }
+  .cursor__xy {
+    position: absolute; left: 14px; top: 14px; font-size: 9.5px; color: var(--ink-3); white-space: nowrap;
+    transition: opacity .3s;
+  }
+  /* sobre algo clicable: el punto sigue visible y crece un poco */
+  .cursor.is-hover .cursor__ring { width: 30px; height: 30px; left: -15px; top: -15px; background: rgba(23,25,29,.08); }
+  .cursor.is-label .cursor__ring { opacity: 0; }
+  .cursor.is-label .cursor__label { transform: translate(-50%, -50%) scale(1); }
+  .cursor.is-label .cursor__xy, .cursor.is-hover .cursor__xy { opacity: 0; }
+  .cursor.is-dark .cursor__ring { border-color: var(--paper); box-shadow: 0 0 0 1px rgba(0,0,0,.5); }
+  .cursor.is-dark.is-hover .cursor__ring { background: rgba(235,235,237,.14); }
+  .cursor.is-down .cursor__ring { transform: scale(.8); }
+
+  /* Cruz de replanteo a toda pantalla, muy sutil */
+  .cursor-cross { position: fixed; inset: 0; pointer-events: none; z-index: 2; }
+  .cursor-cross i { position: absolute; background: rgba(23,25,29,.07); }
+  .cursor-cross .h { left: 0; right: 0; height: 1px; top: 0; }
+  .cursor-cross .v { top: 0; bottom: 0; width: 1px; left: 0; }
+</style>

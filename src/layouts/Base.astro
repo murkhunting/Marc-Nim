@@ -1,0 +1,47 @@
+---
+import '../styles/global.css';
+import Loader from '../components/Loader.astro';
+import Cursor from '../components/Cursor.astro';
+import Nav from '../components/Nav.astro';
+import CuquiPeek from '../components/CuquiPeek.astro';
+import { wedding } from '../data/site';
+
+interface Props { title?: string; description?: string }
+const {
+  title = `${wedding.names.a} & ${wedding.names.b} · 16.10.2027 · Ibiza`,
+  description = 'Proyecto: Casarnos. Ubicación: Ibiza. Fecha: 16/10/2027. Promotor: Orión.',
+} = Astro.props;
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#ebebed" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/img/pareja.jpg" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('reduce');
+    </script>
+  </head>
+  <body>
+    <div class="grid-bg" aria-hidden="true">
+      {Array.from({ length: 12 }).map(() => <span />)}
+    </div>
+    <Loader />
+    <Cursor />
+    <Nav />
+    <main id="main">
+      <slot />
+    </main>
+    <CuquiPeek />
+    <script>
+      import '../scripts/app';
+    </script>
+  </body>
+</html>

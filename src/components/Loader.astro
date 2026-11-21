@@ -1,0 +1,37 @@
+---
+import { wedding } from '../data/site';
+---
+<div class="loader" data-loader aria-hidden="true">
+  <div class="loader__top mono">
+    <span>Proyecto Nº {wedding.number}</span>
+    <span>{wedding.coords}</span>
+  </div>
+  <div class="loader__center">
+    <span class="loader__count" data-loader-count>000</span>
+    <span class="loader__pct mono">%</span>
+  </div>
+  <div class="loader__bottom">
+    <div class="loader__bar"><span data-loader-bar></span></div>
+    <div class="mono loader__status"><span data-loader-status>Cargando planos</span><span>{wedding.names.a} & {wedding.names.b}</span></div>
+  </div>
+</div>
+
+<style>
+  .loader {
+    position: fixed; inset: 0; z-index: 2000;
+    background: var(--ink); color: var(--paper);
+    display: grid; grid-template-rows: auto 1fr auto;
+    padding: calc(20px + env(safe-area-inset-top)) var(--gutter) calc(24px + env(safe-area-inset-bottom));
+  }
+  html:not(.js) .loader, html.reduce .loader, html.no-loader .loader { display: none; }
+  .loader__top { display: flex; justify-content: space-between; gap: 12px; color: var(--ink-3); }
+  .loader__center { display: flex; align-items: flex-start; justify-content: center; align-self: center; }
+  .loader__count {
+    font-size: clamp(5rem, 24vw, 16rem); font-weight: 400; line-height: .85; letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .loader__pct { margin-top: .8em; color: var(--red); }
+  .loader__bar { height: 1px; background: rgba(235,235,237,.18); margin-bottom: 12px; }
+  .loader__bar span { display: block; height: 100%; background: var(--paper); transform-origin: left; transform: scaleX(0); }
+  .loader__status { display: flex; justify-content: space-between; color: var(--ink-3); }
+</style>

@@ -1,0 +1,5 @@
+Fotos del carrusel de "Isla de Ibiza" (Lámina 03).
+Todas las imágenes de esta carpeta (webp, jpg, png, avif) salen solas en el carrusel,
+en orden aleatorio en cada visita y pasando cada 2 segundos.
+Recomendado: ~1800 px de lado largo y menos de 800 KB por foto.
+Los originales a tamaño completo están en /fotos-originales/ibiza (fuera de la web).

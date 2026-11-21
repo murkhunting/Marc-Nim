@@ -1,0 +1,82 @@
+---
+import SheetHead from './SheetHead.astro';
+import { story } from '../data/site';
+---
+<section id="historia" class="story section--flush" data-section="historia" data-flush>
+  <SheetHead
+    n={2}
+    label="Memoria descriptiva"
+    title="Nuestra historia"
+    sub="Todo proyecto tiene sus fases. El nuestro ha tenido estudio previo, anteproyecto, una ampliación felina y, por fin, licencia."
+  />
+
+  <div class="story__pin" data-story-pin>
+    <div class="story__track" data-story-track>
+      {story.map((s, i) => (
+        <article class="story-card" data-story-card {...(s.cuqui ? { 'data-cuqui-hover': 'Fase 03: la más importante. Fin de la discusión.' } : {})}>
+          <div class="story-card__meta mono">
+            <span><b class="red">{s.phase}</b> · {s.tag}</span>
+            <span>{s.year}</span>
+          </div>
+          {s.img ? (
+            <figure class:list={['story-card__img', { 'is-cat': s.cuqui }]}>
+              <img src={s.img} alt={s.title} loading="lazy" />
+            </figure>
+          ) : (
+            <div class="story-card__img void" style={`--a:${i % 2 ? -32 : 32}deg`}>
+              <span class="mono">Foto pendiente</span>
+            </div>
+          )}
+          <h3 class="h3">{s.title}</h3>
+          <p class="story-card__text">{s.text}</p>
+          <span class="story-card__n mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        </article>
+      ))}
+    </div>
+    <div class="story__rail" aria-hidden="true">
+      <span class="mono">Inicio de obra</span>
+      <div class="story__bar"><i data-story-progress></i></div>
+      <span class="mono">16.10.2027</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .story { padding-bottom: 0; }
+
+  /* Fases como tarjetas pegadas entre sí, con bordes compartidos y todo alineado */
+  .story__track { display: grid; padding: 0; }
+  .story-card {
+    position: relative; display: flex; flex-direction: column; gap: 14px;
+    padding: clamp(16px, 2.2vw, 28px) var(--pad-x) clamp(24px, 3vw, 36px);
+    border-bottom: 1px solid var(--line-strong);
+  }
+  .story-card__meta { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--line-strong); padding-bottom: 10px; }
+  .story-card__meta b { font-weight: 500; }
+  .story-card__img { margin: 0; aspect-ratio: 4 / 3; overflow: hidden; background: #ececec; }
+  .story-card__img img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; filter: grayscale(1); transition: transform .9s var(--ease-out); }
+  .story-card__img.is-cat { background: #fff; }
+  .story-card__img.is-cat img { object-fit: contain; object-position: bottom; }
+  .story-card:hover .story-card__img img { transform: scale(1.05); }
+  .story-card__text { margin: 0; color: var(--ink-2); max-width: 38ch; }
+  .story-card__n { position: absolute; right: var(--pad-x); bottom: 10px; font-size: 11px; color: var(--ink-3); }
+  .story__rail { display: none; }
+
+  @media (min-width: 900px) {
+    .story__pin { height: calc(100vh - var(--nav-h)); display: flex; flex-direction: column; overflow: hidden; }
+    .story__track { flex: 1; min-height: 0; display: flex; width: max-content; align-items: stretch; }
+    .story-card {
+      width: clamp(300px, 30vw, 440px); flex: none; min-height: 0;
+      border-bottom: 0; border-right: 1px solid var(--line-strong);
+    }
+    .story-card__img { aspect-ratio: auto; flex: 1; min-height: 0; }
+    .story-card__text { padding-bottom: 14px; }
+    /* Barra de progreso con borde superior e inferior */
+    .story__rail {
+      display: flex; align-items: center; gap: 16px; padding: 14px var(--pad-x);
+      border-block: 1px solid var(--line-strong); color: var(--ink-3);
+    }
+    .story__bar { flex: 1; height: 1px; background: var(--line-strong); position: relative; }
+    .story__bar i { position: absolute; inset: -1px 0; background: var(--red); transform-origin: left; transform: scaleX(0); }
+  }
+</style>

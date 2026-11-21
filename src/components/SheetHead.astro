@@ -1,0 +1,21 @@
+---
+interface Props {
+  n: number;
+  label: string;   // nombre técnico de la lámina
+  title: string;   // una sola línea
+  sub?: string;
+  scale?: string;
+}
+const { n, label, title, sub, scale = 'E 1:1' } = Astro.props;
+const flat = title.replace(/\n/g, ' ');
+const pad = (x: number) => String(x).padStart(2, '0');
+---
+<!-- Barra de lámina: igual que la de "Proyecto Nº…" del hero -->
+<div class="sheet-bar mono">
+  <span>Lámina {pad(n)} / 09</span>
+  <span class="sheet-bar__r">{label} · {scale}</span>
+</div>
+<header class="sheet-body">
+  <h2 class="h2 h2--line" style={`--chars:${flat.length}`} data-split>{flat}</h2>
+  {sub && <p class="sheet-sub" data-reveal>{sub}</p>}
+</header>

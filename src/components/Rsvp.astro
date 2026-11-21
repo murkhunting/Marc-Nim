@@ -1,0 +1,421 @@
+---
+import '@fontsource/pinyon-script/400.css';
+import SheetHead from './SheetHead.astro';
+import { wedding } from '../data/site';
+const endpoint = import.meta.env.PUBLIC_RSVP_ENDPOINT ?? '';
+---
+<section id="rsvp" class="rsvp section--flush" data-flush data-section="rsvp">
+  <SheetHead
+    n={9}
+    label="Solicitud de licencia de asistencia"
+    title={'¿Vienes a la boda?'}
+    sub="Confírmanos tu asistencia. La fecha límite es el 16 de junio de 2027."
+  />
+  <div class="sheet-content rsvp__area" data-rsvp-area>
+
+    <div class="rsvp-stage" data-stage>
+      <div class="env">
+        <div class="env__tilt" data-env-tilt>
+          <div class="env__flip" data-env-flip>
+            <!-- Cara delantera: el nombre del invitado (viene de la URL: ?para=Nombre) -->
+            <div class="env__face env__face--front" aria-hidden="true">
+              <span class="env__stamp"><span class="env__stamp-in">
+                <span class="env__stamp-mono">M<small>/</small>N</span>
+                <span class="mono">Ibiza</span>
+                <span class="mono">16·10·27</span>
+              </span></span>
+              <div class="env__addr">
+                <span class="mono env__to" data-guest-to hidden>Para</span>
+                <p class="env__name" data-guest-name>Para ti</p>
+                <span class="env__rule"></span>
+                <span class="mono env__place">Marc &amp; Nimrha · Ibiza</span>
+              </div>
+            </div>
+            <!-- Cara trasera: solapa, bolsillo y lacre -->
+            <div class="env__face env__face--back">
+              <span class="env__back" data-env="back"></span>
+              <span class="env__front" data-env="front">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M0 100 50 50M100 100 50 50" />
+                </svg>
+              </span>
+              <span class="env__flap" data-env="flap"></span>
+              <span class="env__seal" data-env="seal" aria-hidden="true"><span class="env__mono">M<small>/</small>N</span></span>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="env__hit" data-envelope data-cursor-text="Abrir invitación" aria-label="Abrir invitación"></button>
+      </div>
+
+    <div class="form-card" data-rsvp data-endpoint={endpoint}>
+      <div class="form-card__top mono">
+        <span>Solicitud · Exp. Nº <b data-exp>—</b></span>
+        <span class="form-card__step" data-step-label>Paso 1 / 7</span>
+      </div>
+      <div class="form-card__progress" aria-hidden="true" data-progress-bar></div>
+
+      <form class="rsvp-form" id="rsvp-form" data-form novalidate>
+        <!-- 1. Datos -->
+        <fieldset class="step is-current" data-step data-say-text="Empecemos por lo básico. ¿Quién eres?">
+          <legend class="step__title">¿Quién firma la solicitud?</legend>
+          <label class="field">
+            <span class="mono field__label">Nombre y apellidos *</span>
+            <input name="nombre" required autocomplete="name" placeholder="Nombre Apellido" />
+          </label>
+          <label class="field">
+            <span class="mono field__label">Email *</span>
+            <input name="email" type="email" required autocomplete="email" inputmode="email" placeholder="tu@email.com" />
+          </label>
+          <label class="field">
+            <span class="mono field__label">Teléfono (opcional)</span>
+            <input name="telefono" type="tel" autocomplete="tel" inputmode="tel" placeholder="+34 / +507 …" />
+          </label>
+        </fieldset>
+
+        <!-- 2. Asistencia -->
+        <fieldset class="step" data-step data-say-text="La pregunta importante. Sin presión. (Mucha presión.)">
+          <legend class="step__title">¿Asistirás el 16 de octubre de 2027?</legend>
+          <div class="choices choices--big">
+            <label class="choice">
+              <input type="radio" name="asistencia" value="si" required />
+              <span class="choice__box">
+                <span class="choice__big">Sí, ahí estaré</span>
+                <span class="mono">Licencia aprobada</span>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="asistencia" value="no" />
+              <span class="choice__box">
+                <span class="choice__big">No podré ir</span>
+                <span class="mono">Os echaré de menos</span>
+              </span>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- 3. Acompañantes -->
+        <fieldset class="step" data-step data-only="si" data-say-text="¿Vienes solo o acompañado? No juzgo. Bueno, un poco.">
+          <legend class="step__title">¿Vienes acompañado?</legend>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="acompanante" value="no" checked /><span class="choice__box">Vengo solo/a</span></label>
+            <label class="choice"><input type="radio" name="acompanante" value="si" /><span class="choice__box">Con acompañante</span></label>
+          </div>
+          <label class="field" data-show-if="acompanante=si">
+            <span class="mono field__label">Nombre del acompañante</span>
+            <input name="acompanante_nombre" placeholder="Nombre Apellido" />
+          </label>
+          <div class="field">
+            <span class="mono field__label">Niños que vienen contigo</span>
+            <div class="stepper" data-stepper>
+              <button type="button" data-dec aria-label="Menos niños">−</button>
+              <input name="ninos" type="number" min="0" max="6" value="0" inputmode="numeric" aria-label="Número de niños" />
+              <button type="button" data-inc aria-label="Más niños">+</button>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- 4. Menú -->
+        <fieldset class="step" data-step data-only="si" data-say-text="Yo como pienso. Tú dime qué comes.">
+          <legend class="step__title">Menú y alergias</legend>
+          <div class="choices choices--wrap">
+            {['Sin preferencias', 'Vegetariano', 'Vegano', 'Sin gluten', 'Otro'].map((m, i) => (
+              <label class="choice choice--chip"><input type="radio" name="menu" value={m} checked={i === 0} /><span class="choice__box">{m}</span></label>
+            ))}
+          </div>
+          <label class="field">
+            <span class="mono field__label">Alergias o intolerancias (tuyas o de tus acompañantes)</span>
+            <textarea name="alergias" rows="3" placeholder="Ej.: alergia a los frutos secos"></textarea>
+          </label>
+        </fieldset>
+
+        <!-- 5. Logística -->
+        <fieldset class="step" data-step data-only="si" data-say-text="Logística. Lo mío es dormir; lo tuyo, llegar.">
+          <legend class="step__title">Logística</legend>
+          <div class="field">
+            <span class="mono field__label">¿Desde dónde vienes?</span>
+            <div class="choices choices--wrap">
+              {['Panamá', 'Barcelona', 'Ibiza', 'Otro'].map((m) => (
+                <label class="choice choice--chip"><input type="radio" name="origen" value={m} /><span class="choice__box">{m}</span></label>
+              ))}
+            </div>
+          </div>
+          <div class="field">
+            <span class="mono field__label">¿Te interesa transporte el día de la boda?</span>
+            <div class="choices choices--wrap">
+              {['Sí', 'No', 'Aún no lo sé'].map((m) => (
+                <label class="choice choice--chip"><input type="radio" name="transporte" value={m} /><span class="choice__box">{m}</span></label>
+              ))}
+            </div>
+          </div>
+          <label class="field">
+            <span class="mono field__label">¿Cuándo llegas a Ibiza? (aprox.)</span>
+            <input name="llegada" type="date" min="2027-10-01" max="2027-10-16" />
+          </label>
+        </fieldset>
+
+        <!-- 6. Fiesta / mensaje -->
+        <fieldset class="step" data-step data-say-text="La canción que no puede faltar. Ni se te ocurra poner Cats.">
+          <legend class="step__title" data-title-si="Fiesta y mensaje" data-title-no="Un mensaje para los novios">Fiesta y mensaje</legend>
+          <label class="field" data-only="si">
+            <span class="mono field__label">Una canción que no puede faltar</span>
+            <input name="cancion" placeholder="Artista — Canción" />
+          </label>
+          <label class="field">
+            <span class="mono field__label">Mensaje para Marc y Nimrha</span>
+            <textarea name="mensaje" rows="4" placeholder="Lo que quieras…"></textarea>
+          </label>
+        </fieldset>
+
+        <!-- 7. Resumen -->
+        <fieldset class="step" data-step data-say-text="Revisa el expediente antes de firmar.">
+          <legend class="step__title">Revisa tu solicitud</legend>
+          <dl class="summary" data-summary></dl>
+        </fieldset>
+
+        <p class="form-error" data-error role="alert" hidden></p>
+
+        <div class="form-nav">
+          <button type="button" class="farrow" data-prev disabled aria-label="Paso anterior">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+          </button>
+          <button type="button" class="farrow farrow--wide" data-next aria-label="Siguiente paso">
+            <span>Siguiente</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+          </button>
+          <button type="submit" class="farrow farrow--wide farrow--send" data-submit hidden aria-label="Firmar y enviar">
+            <span>Firmar y enviar</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7" /></svg>
+          </button>
+        </div>
+
+      </form>
+
+      <div class="done" data-done hidden>
+        <img src="/img/huella.jpg" alt="" class="done__stamp" data-done-stamp width="300" height="252" />
+        <p class="mono done__exp">Expediente <span data-exp>—</span></p>
+        <h3 class="done__title" data-done-title>Licencia concedida</h3>
+        <p class="done__text" data-done-text>¡Gracias! Hemos recibido tu respuesta. Nos vemos en Ibiza.</p>
+        <p class="note" data-done-note>— Orión, promotor</p>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Área verde: ocupa la pantalla bajo el header y centra el sobre / la tarjeta */
+  .rsvp .rsvp__area {
+    background: var(--paper); display: grid; align-content: center;
+    min-height: calc(100svh - var(--nav-h)); padding: clamp(16px, 3vh, 36px) var(--pad-x);
+  }
+
+  /* ── Sobre de la invitación ───────────────────────────────── */
+  /* Sobre y tarjeta comparten la misma celda: el sobre mide exactamente lo que la tarjeta */
+  .rsvp-stage {
+    display: grid; position: relative; isolation: isolate;
+    /* Textura de papel de invitación: grano fino + fibras + leve moteado */
+    --tex-grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .09 0 0 0 0 .1 0 0 0 0 .11 0 0 0 .11 0'/></filter><rect width='100%25' height='100%25' filter='url(%23g)'/></svg>");
+    --tex-fiber: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='.05' numOctaves='4' seed='7' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .12 0 0 0 0 .12 0 0 0 0 .14 0 0 0 .08 -.02'/></filter><rect width='100%25' height='100%25' filter='url(%23f)'/></svg>");
+    --tex-mottle: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='m'><feTurbulence type='fractalNoise' baseFrequency='.005' numOctaves='3' seed='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .3 0 0 0 0 .3 0 0 0 0 .32 0 0 0 .06 -.015'/></filter><rect width='100%25' height='100%25' filter='url(%23m)'/></svg>");
+    --tex: var(--tex-grain), var(--tex-fiber), var(--tex-mottle);
+  }
+  .rsvp-stage > .form-card, .rsvp-stage > .env { grid-area: 1 / 1; justify-self: center; width: min(860px, 100%); }
+  .rsvp-stage > .form-card { margin: 0; z-index: 2; }
+  /* Sin JS no hay sobre: el formulario se ve directamente */
+  .rsvp-stage:not([data-closed]) .env { display: none; }
+
+  /* Escena 3D: inclinación (tilt) > volteo (flip) > dos caras */
+  .env { position: relative; align-self: stretch; --flap: 50%; perspective: 1800px; }
+  .env__tilt, .env__flip, .env__face { position: absolute; inset: 0; }
+  .env__tilt, .env__flip { transform-style: preserve-3d; }
+  .env__face { -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+  .env__face--back { transform: rotateY(180deg); }
+  /* Tras el volteo todo vuelve a ser plano, para que la tarjeta pueda quedar entre las capas del sobre */
+  .env.is-flat { perspective: none; }
+  .env.is-flat .env__tilt, .env.is-flat .env__flip { transform-style: flat; transform: none; }
+  .env.is-flat .env__face--back { transform: none; -webkit-backface-visibility: visible; backface-visibility: visible; }
+  .env.is-flat .env__face--front { display: none; }
+
+  /* Cara delantera (la del nombre) */
+  .env__face--front {
+    border-radius: 2px; overflow: hidden; display: grid; place-items: center;
+    background: var(--tex), linear-gradient(165deg, #86b095, var(--red) 55%, #6c9a7d);
+    box-shadow: 0 40px 70px -34px rgba(23, 25, 29, .6), inset 0 0 0 1px rgba(255, 255, 255, .28);
+  }
+  .env__addr { position: relative; container-type: inline-size; width: 74%; display: grid; justify-items: center; gap: 4px; text-align: center; transform: translateY(8%); }
+  .env__to { color: var(--paper); letter-spacing: .24em; }
+  .env__to[hidden] { display: none; }
+  .env__name {
+    margin: 0; padding: .08em .3em .18em; color: #fff; line-height: 1.12; font-weight: 400;
+    font-family: 'Pinyon Script', var(--f-hand), cursive;
+    font-size: min(clamp(40px, 6.6vw, 82px), calc(100cqw / (var(--len, 8) * .43)));
+    overflow-wrap: anywhere;
+  }
+  .env__rule { width: 42%; height: 1px; background: var(--paper); margin: 4px 0 6px; }
+  .env__place { color: var(--paper); letter-spacing: .14em; }
+
+  /* Sello de correos con borde troquelado */
+  .env__stamp {
+    position: absolute; top: 7%; right: 4.5%; width: clamp(62px, 8vw, 92px); aspect-ratio: 4 / 5; padding: 5px;
+    background: radial-gradient(circle at 50% 50%, transparent 2.3px, #f8f8f7 2.6px) -4px -4px / 8px 8px;
+    filter: drop-shadow(0 1px 1px rgba(23, 25, 29, .15)); transform: rotate(2deg);
+  }
+  .env__stamp-in {
+    display: grid; place-items: center; align-content: center; gap: 2px; height: 100%;
+    background: var(--tex-grain), #f8f8f7; border: 1px solid var(--red); color: var(--red);
+  }
+  .env__stamp-in .mono { font-size: clamp(7px, .7vw, 9px); letter-spacing: .12em; line-height: 1.2; }
+  .env__stamp-mono { font-family: var(--f-rough); font-size: clamp(20px, 2.3vw, 28px); line-height: 1; }
+  .env__stamp-mono small { font-size: .8em; }
+  /* Cara trasera: capas trasera (1) < tarjeta (2) < bolsillo (3) < solapa (4) < lacre (5) */
+  .env__face--back [data-env] { position: absolute; display: block; }
+  .env__back {
+    inset: 0; z-index: 1; border-radius: 2px; background: var(--tex), linear-gradient(180deg, #669677, #72a083);
+    box-shadow: 0 40px 70px -34px rgba(23, 25, 29, .6);
+  }
+  .env__front {
+    inset: 0; z-index: 3; border-radius: 2px; background: var(--tex), linear-gradient(180deg, #84ae94, #7aa78b);
+    clip-path: polygon(0 0, 50% var(--flap), 100% 0, 100% 100%, 0 100%);
+  }
+  .env__front svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .env__front path { fill: none; stroke: rgba(23, 25, 29, .2); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+  .env__flap {
+    left: 0; top: 0; width: 100%; height: var(--flap); z-index: 4; transform-origin: 50% 0;
+    background: var(--tex), linear-gradient(180deg, #80ab91, #6e9c80);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    filter: drop-shadow(0 2px 2px rgba(23, 25, 29, .12));
+  }
+  /* Lacre con las iniciales */
+  .env .env__seal {
+    z-index: 5; left: 50%; top: var(--flap); width: clamp(88px, 11vw, 112px); aspect-ratio: 1; display: grid; place-items: center;
+    translate: -50% -50%;
+    border-radius: 52% 48% 50% 50% / 50% 53% 47% 50%;
+    background: radial-gradient(circle at 32% 28%, #5f8f73, #3f6a52 55%, #2f5440);
+    box-shadow: 0 6px 12px -3px rgba(23, 25, 29, .5), 0 0 0 3px rgba(47, 84, 64, .35), inset 0 -4px 8px rgba(23, 25, 29, .18), inset 0 3px 5px rgba(255, 255, 255, .28);
+  }
+  .env__seal::before { content: ''; position: absolute; inset: 8%; border-radius: inherit; border: 1.5px solid rgba(255, 255, 255, .32); }
+  .env__mono {
+    position: relative; display: flex; align-items: baseline; gap: .04em;
+    font-family: var(--f-rough); font-size: clamp(38px, 4.6vw, 48px); line-height: 1; color: #f7f5f1;
+    text-shadow: 0 1px 1px rgba(23, 25, 29, .3); padding-top: .1em;
+  }
+  .env__mono small { font-size: .8em; margin: 0 .06em; font-weight: 400; }
+  .env__hit { position: absolute; inset: 0; z-index: 6; display: block; background: none; border: 0; padding: 0; cursor: pointer; }
+  /* La tarjeta mide siempre lo mismo (la altura del paso más alto, la fija el JS en --card-h) */
+  .form-card {
+    --cp: clamp(18px, 3vw, 40px);   /* aire interior dentro del marco */
+    --fp: clamp(10px, 1.2vw, 16px); /* margen entre el borde de la tarjeta y el marco */
+    position: relative; max-width: 860px; margin: 0 auto;
+    display: flex; flex-direction: column; height: var(--card-h, auto);
+    background: #fff; color: var(--ink);
+    border: 0; box-shadow: 0 40px 70px -34px rgba(23, 25, 29, .6);
+    padding: calc(var(--fp) + var(--cp)) calc(var(--fp) + var(--cp)) calc(var(--fp) + var(--cp) * .75);
+  }
+  /* Marco interior: todo el formulario queda encuadrado, como una lámina */
+  .form-card::before {
+    content: ''; position: absolute; inset: var(--fp); pointer-events: none; z-index: 1;
+    border: 1px solid var(--line-strong);
+  }
+  /* Cabecera de la solicitud: franja pegada arriba del marco, de borde a borde, texto centrado en vertical */
+  .form-card__top {
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; align-content: center; gap: 4px 10px;
+    margin: calc(var(--cp) * -1) calc(var(--cp) * -1) 0; padding: 10px var(--cp); min-height: clamp(52px, 6.5vh, 60px); gap: 4px 16px;
+    border-bottom: 1px solid var(--line-strong);
+  }
+  .form-card__top > span { white-space: nowrap; }
+  .form-card__top b { font-weight: 500; color: var(--red); }
+  .form-card__progress { display: flex; gap: 4px; margin: calc(var(--cp) * .8) 0 clamp(26px, 3.4vw, 40px); }
+  .form-card__progress :global(i) { flex: 1; height: 4px; background: var(--paper-3); transition: background .4s; }
+  .form-card__progress :global(i.is-done) { background: var(--ink); }
+  .form-card__progress :global(i.is-now) { background: var(--red); }
+
+  .rsvp-form { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+  .rsvp-form .step.is-current { flex: 0 1 auto; min-height: 0; overflow: auto; }
+  .step { border: 0; margin: 0; padding: 0; min-width: 0; display: none; gap: 18px; }
+  .step.is-current { display: grid; }
+  .step__title { font-size: clamp(1.6rem, 4vw, 2.6rem); font-weight: 500; line-height: 1.05; text-transform: uppercase; padding: 0; margin-bottom: 18px; }
+
+  .field { display: grid; gap: 6px; }
+  .field[hidden] { display: none; }
+  .field__label { color: var(--ink-2); }
+  .field input:not([type='radio']), .field textarea {
+    width: 100%; min-height: 50px; padding: 10px 2px; font-size: 1.15rem;
+    background: transparent; border: 0; border-bottom: 1.5px solid var(--ink); border-radius: 0;
+    transition: border-color .3s, background .3s;
+  }
+  .field textarea { resize: vertical; min-height: 90px; border: 1.5px solid var(--ink); padding: 10px 12px; }
+  .field input:focus, .field textarea:focus { outline: none; border-color: var(--red); background: rgba(120,165,138,.06); }
+  .field input[aria-invalid='true'] { border-color: var(--red); }
+  .field input::placeholder, .field textarea::placeholder { color: var(--ink-3); }
+
+  .choices { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
+  .choices--wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+  .choice { position: relative; display: block; }
+  .choice input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .choice__box {
+    display: grid; gap: 6px; align-content: center; min-height: 54px; padding: 12px 16px; height: 100%;
+    border: 1.5px solid var(--ink); background: #fff;
+    transition: background .3s, color .3s, transform .3s var(--ease-out), box-shadow .3s var(--ease-out);
+  }
+  .choice--chip .choice__box { min-height: 46px; padding: 8px 16px; border-radius: 999px; }
+  .choices--big .choice__box { min-height: 130px; padding: 18px; }
+  .choice__big { font-size: clamp(1.25rem, 3vw, 1.7rem); font-weight: 600; text-transform: uppercase; line-height: 1.05; }
+  .choice input:checked + .choice__box { background: var(--ink); color: var(--paper); box-shadow: 4px 4px 0 var(--red); transform: translate(-2px, -2px); }
+  .choice input:focus-visible + .choice__box { outline: 2px solid var(--red); outline-offset: 3px; }
+  .choice:hover .choice__box { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--ink); }
+  .choice input:checked + .choice__box .mono { color: var(--paper-3); }
+
+  .stepper { display: inline-flex; align-items: center; border: 1.5px solid var(--ink); width: max-content; }
+  .stepper button { width: 50px; height: 50px; border: 0; background: #fff; font-size: 1.4rem; }
+  .stepper button:hover { background: var(--ink); color: var(--paper); }
+  .stepper input { width: 60px !important; text-align: center; border: 0 !important; border-inline: 1.5px solid var(--ink) !important; min-height: 50px; -moz-appearance: textfield; }
+  .stepper input::-webkit-outer-spin-button, .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .summary { margin: 0; display: grid; }
+  .summary :global(div) { display: grid; grid-template-columns: 130px 1fr; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
+  .summary :global(dt) { font-family: var(--f-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); padding-top: 3px; }
+  .summary :global(dd) { margin: 0; overflow-wrap: anywhere; }
+
+  .form-error { color: var(--red); margin: 16px 0 0; font-weight: 500; }
+  /* Barra inferior: pegada al borde del marco, botones a la derecha (atrás solo flecha, siguiente con texto) */
+  .form-card__step { margin-left: auto; }
+  .form-nav {
+    display: flex; justify-content: flex-end; margin: auto calc(var(--cp) * -1) calc(var(--cp) * -.75);
+    border-top: 1px solid var(--frame-line, var(--line-strong));
+  }
+  .farrow {
+    position: relative; display: flex; align-items: center; justify-content: center; gap: 12px;
+    min-width: clamp(56px, 5vw, 68px); min-height: clamp(56px, 7.5vh, 68px); padding: 0;
+    background: none; border: 0; border-left: 1px solid var(--line-strong); border-radius: 0; color: var(--ink);
+    font-family: var(--f-futura); font-weight: 500; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase;
+    overflow: hidden; isolation: isolate; transition: color .4s var(--ease), opacity .3s;
+  }
+  .farrow--wide { padding: 0 clamp(20px, 2.6vw, 32px); }
+  .farrow[hidden] { display: none; }
+  .farrow::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; background: var(--red);
+    transform: translateY(101%); border-radius: 50% 50% 0 0;
+    transition: transform .5s var(--ease), border-radius .5s var(--ease);
+  }
+  .farrow:not(:disabled):hover, .farrow:focus-visible { color: #fff; }
+  .farrow:not(:disabled):hover::before, .farrow:focus-visible::before { transform: translateY(0); border-radius: 0; }
+  .farrow:disabled { opacity: .3; cursor: default; }
+  .farrow.is-sending { opacity: .6; cursor: progress; }
+  .farrow svg { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .farrow--wide svg { transition: transform .4s var(--ease); }
+  .farrow--wide:hover svg { transform: translateX(3px); }
+
+  .done { text-align: center; display: grid; justify-items: center; align-content: center; gap: 6px; padding: 0; flex: 1 1 auto; min-height: 0; }
+  .done[hidden] { display: none; }
+  .done__stamp { height: auto; width: clamp(64px, 7vw, 84px); mix-blend-mode: multiply; transform: rotate(-12deg); }
+  .done__exp { margin: 0; color: var(--ink-3); }
+  .done__title { margin: 0; font-size: clamp(1.7rem, 4.4vw, 2.6rem); text-transform: uppercase; font-weight: 500; line-height: 1; }
+  .done__text { margin: 0; color: var(--ink-2); max-width: 40ch; font-size: .98rem; line-height: 1.35; }
+  .done .note { margin: 0; }
+
+  @media (max-width: 480px) {
+    .choices:not(.choices--wrap) { grid-template-columns: 1fr; }
+    .choices--big .choice__box { min-height: 96px; }
+    .summary :global(div) { grid-template-columns: 1fr; gap: 2px; }
+  }
+</style>

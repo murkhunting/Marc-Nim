@@ -1,0 +1,62 @@
+---
+import { wedding } from '../data/site';
+---
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__big" aria-hidden="true" data-foot-big><span>16.10.27</span></div>
+
+    <div class="foot__bar mono">
+      <span class="foot__cell">© {wedding.names.a} & {wedding.names.b} · Proyecto Nº {wedding.number}</span>
+      <span class="foot__cell foot__cell--mid">Hecho con amor y supervisión felina</span>
+      <a class="foot__cell foot__cell--end" href="#inicio" data-scroll="inicio" data-cursor="paw">
+        <span class="foot__roll" data-text="Volver arriba ↑"><span>Volver arriba ↑</span></span>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .foot { padding: var(--nav-h) var(--gutter) 0; background: var(--paper); position: relative; overflow: hidden; }
+  .foot .wrap { max-width: none; }
+  /* Fecha: rellena, alineada a la izquierda, ocupa todo el ancho y lleva borde superior */
+  .foot__big {
+    container-type: inline-size; margin: 0; padding: clamp(10px, 2vw, 28px) var(--pad-x) clamp(14px, 2.4vw, 32px);
+    border-top: 1px solid var(--frame-line, var(--line-strong)); text-align: left; overflow: hidden;
+  }
+  .foot__big span {
+    display: block; white-space: nowrap; color: var(--ink); font-weight: 300; letter-spacing: -0.05em; line-height: .85;
+    font-size: 30.9cqw; margin-left: -.055em; /* 8 caracteres: el ancho exacto del contenedor */
+  }
+  /* Franja final: de borde a borde del marco, 3 casillas separadas por bordes y texto centrado en vertical */
+  .foot__bar { display: grid; color: var(--ink-3); border-top: 1px solid var(--frame-line, var(--line-strong)); }
+  .foot__cell {
+    display: flex; align-items: center; min-height: clamp(56px, 8vh, 72px); padding: 12px var(--pad-x);
+    border-bottom: 1px solid var(--frame-line, var(--line-strong));
+  }
+  .foot__cell:last-child { border-bottom: 0; }
+  /* Botón: mismo estilo y efecto que el del hero (relleno verde desde abajo y texto que rueda a blanco) */
+  .foot__cell--end {
+    position: relative; overflow: hidden; isolation: isolate; color: var(--ink); text-decoration: none;
+    font-family: var(--f-futura); font-weight: 500; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase;
+    transition: color .4s var(--ease);
+  }
+  .foot__cell--end::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; background: var(--red);
+    transform: translateY(101%); border-radius: 50% 50% 0 0;
+    transition: transform .5s var(--ease), border-radius .5s var(--ease);
+  }
+  .foot__cell--end:hover::before, .foot__cell--end:focus-visible::before { transform: translateY(0); border-radius: 0; }
+  .foot__roll { position: relative; display: inline-block; overflow: hidden; line-height: 1.5; }
+  .foot__roll > span { display: inline-block; transition: transform .45s var(--ease); }
+  .foot__roll::after { content: attr(data-text); position: absolute; left: 0; top: 100%; color: #fff; transition: transform .45s var(--ease); }
+  .foot__cell--end:hover .foot__roll > span, .foot__cell--end:hover .foot__roll::after,
+  .foot__cell--end:focus-visible .foot__roll > span, .foot__cell--end:focus-visible .foot__roll::after { transform: translateY(-100%); }
+  @media (min-width: 760px) {
+    .foot__bar { grid-template-columns: 1fr 1fr clamp(190px, 16vw, 240px); }
+    .foot__cell { border-bottom: 0; border-right: 1px solid var(--frame-line, var(--line-strong)); }
+    .foot__cell:last-child { border-right: 0; }
+    .foot__cell--mid { justify-content: center; }
+    .foot__cell--end { border-left: 0; justify-content: center; }
+    .foot__cell--mid { border-right: 1px solid var(--frame-line, var(--line-strong)); }
+  }
+</style>

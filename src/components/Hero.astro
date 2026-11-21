@@ -1,0 +1,165 @@
+---
+import { wedding } from '../data/site';
+import Stamp from './Stamp.astro';
+---
+<section id="inicio" class="hero" data-section="inicio">
+  <div class="hero__sheet">
+    <div class="cell cell--top mono" data-cell>
+      <span>Proyecto Nº <b>{wedding.number}</b></span>
+      <span class="hero__coords">{wedding.coords}</span>
+    </div>
+
+    <div class="cell cell--names" data-cell>
+      <h1 class="hero__names" data-hero-names>
+        <span class="hero__name">{wedding.names.a}</span>
+        <span class="hero__amp">&amp;</span>
+        <span class="hero__name">{wedding.names.b}</span>
+      </h1>
+    </div>
+
+    <div
+      class="cell cell--photo"
+      data-cell
+      data-approve
+      role="button"
+      tabindex="0"
+      aria-pressed="false"
+      aria-label="Pulsa para aprobar la foto"
+      data-cursor-text="Pulsa para aprobar"
+      data-cuqui-hover="Pulsa la foto y la apruebo. Con la pata, claro."
+    >
+      <figure class="hero__photo" data-hero-photo>
+        <img src="/img/pareja_fondo_transparente.webp" alt="Marc y Nimrha abrazados" width="1149" height="1369" fetchpriority="high" />
+      </figure>
+      <span class="hero__stamp" data-hero-stamp><Stamp id="hero" /></span>
+      <span class="hero__hint mono" data-hero-hint aria-hidden="true">Pulsa para aprobar ↓</span>
+      <span class="hero__dim hero__dim--v mono" aria-hidden="true">865</span>
+      <span class="hero__dim hero__dim--h mono" aria-hidden="true">680</span>
+    </div>
+
+    <div class="cell cell--count" data-cell>
+      <p class="mono hero__count-title">Plazo de ejecución restante</p>
+      <div class="hero__count" data-countdown={wedding.date} aria-label="Cuenta atrás hasta la boda">
+        <div><b data-cd="d">000</b><span class="mono">Días</span></div>
+        <div><b data-cd="h">00</b><span class="mono">Horas</span></div>
+        <div><b data-cd="m">00</b><span class="mono">Min</span></div>
+        <div><b data-cd="s">00</b><span class="mono">Seg</span></div>
+      </div>
+    </div>
+
+    <a href="#historia" data-scroll="historia" class="cell cell--scroll" data-cell data-cursor="paw">
+      <span class="hero__roll" data-text="Desliza para ver el proyecto ↓"><span>Desliza para ver el proyecto ↓</span></span>
+    </a>
+  </div>
+</section>
+
+<style>
+  /* La lámina arranca justo bajo el header: su borde superior ES el borde inferior del header */
+  .hero {
+    padding: var(--nav-h) 0 0;
+    display: flex; flex-direction: column;
+  }
+  .hero__sheet {
+    flex: 1;
+    margin: 0 var(--gutter); /* los bordes laterales los pone el marco de la página */
+    display: grid;
+    grid-template-columns: 1fr;
+    background: color-mix(in srgb, var(--paper) 85%, white);
+    border-bottom: 1px solid var(--frame-line, var(--line-strong));
+  }
+  .cell { position: relative; padding: clamp(14px, min(2.4vw, 3.6vh), 36px); border-bottom: 1px solid var(--line-strong); }
+  .cell--top { display: flex; justify-content: space-between; gap: 10px; padding-block: 12px; }
+  .cell--top b { font-weight: 500; }
+  .hero__coords { color: var(--ink-2); }
+
+  .hero__names {
+    margin: 0; font-family: var(--f-rough); font-weight: 400; line-height: .9;
+    font-size: clamp(4rem, 24vw, 9.6rem);
+    letter-spacing: -0.01em;
+    display: flex; flex-wrap: wrap; align-items: baseline; column-gap: .18em;
+  }
+  .hero__amp { color: var(--red); font-size: .8em; }
+
+  .cell--photo { padding: 0; background: var(--paper-2); overflow: hidden; min-height: 92vw; cursor: pointer; }
+  .cell--photo:focus-visible { outline-offset: -4px; }
+  .hero__photo { margin: 0; position: absolute; inset: 0; }
+  .hero__photo img { width: 100%; height: 115%; object-fit: cover; object-position: 50% 30%; filter: grayscale(1) contrast(1.05); transition: filter .9s var(--ease); will-change: transform; }
+  .cell--photo.is-approved .hero__photo img { filter: none; }
+
+  /* Sello: oculto hasta que alguien aprueba; entra desde el lateral */
+  .hero__stamp {
+    position: absolute; right: 5%; top: 14%; width: clamp(130px, 34%, 240px); mix-blend-mode: multiply;
+    transform: translateX(170%) rotate(-8deg); opacity: 0; pointer-events: none;
+  }
+  .cell--photo.is-approved .hero__stamp { opacity: 1; transform: rotate(-8deg); }
+
+  .hero__hint { display: none; position: absolute; left: 12px; bottom: 12px; background: var(--ink); color: var(--paper); padding: 7px 12px; border-radius: 999px; }
+  @media (hover: none) { .hero__hint { display: block; } }
+  .cell--photo.is-approved .hero__hint { display: none; }
+
+  .hero__dim { position: absolute; color: var(--ink-3); font-size: 9.5px; display: none; }
+
+  /* Caja del plazo: los contadores ocupan la caja de borde a borde, sin huecos ni bordes duplicados */
+  .cell--count { padding: 0; }
+  .hero__count-title { margin: 0; padding: clamp(12px, 1.6vw, 18px) clamp(16px, 2.4vw, 36px); color: var(--ink-2); }
+  .hero__count { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid var(--line); }
+  .hero__count > div {
+    display: grid; gap: 4px; justify-items: start; align-content: center;
+    padding: clamp(10px, 1.4vw, 18px) clamp(12px, 1.6vw, 22px);
+  }
+  .hero__count > div + div { border-left: 1px solid var(--line); }
+  .hero__count b { font-weight: 400; font-size: clamp(1.9rem, 6vw, 3.4rem); line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .hero__count span { color: var(--ink-3); font-size: 10px; }
+
+  /* Botón inferior: mismo efecto que los botones del header */
+  .cell--scroll {
+    position: relative; display: flex; align-items: center; justify-content: flex-start;
+    min-height: clamp(64px, 9vh, 84px); padding: 0 clamp(16px, 2.4vw, 36px); border-bottom: 0;
+    font-family: var(--f-futura); font-weight: 500; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase;
+    text-decoration: none; overflow: hidden; isolation: isolate;
+    transition: color .4s var(--ease);
+  }
+  .cell--scroll::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: var(--red);
+    transform: translateY(101%); border-radius: 50% 50% 0 0;
+    transition: transform .5s var(--ease), border-radius .5s var(--ease);
+  }
+  .cell--scroll:hover::before, .cell--scroll:focus-visible::before { transform: translateY(0); border-radius: 0; }
+  .hero__roll { position: relative; display: inline-block; overflow: hidden; line-height: 1.5; }
+  .hero__roll > span { display: inline-block; transition: transform .45s var(--ease); }
+  .hero__roll::after {
+    content: attr(data-text); position: absolute; left: 0; top: 100%; color: #fff;
+    transition: transform .45s var(--ease);
+  }
+  .cell--scroll:hover .hero__roll > span, .cell--scroll:hover .hero__roll::after,
+  .cell--scroll:focus-visible .hero__roll > span, .cell--scroll:focus-visible .hero__roll::after { transform: translateY(-100%); }
+
+  @media (max-width: 600px) {
+    .hero__coords { font-size: 10px; }
+  }
+
+  @media (min-width: 900px) {
+    /* El hero ocupa exactamente la pantalla al entrar */
+    .hero { min-height: 100svh; }
+    .hero__sheet {
+      grid-template-columns: 1.2fr 1fr;
+      grid-template-rows: auto 1fr auto auto;
+      grid-template-areas:
+        'top top'
+        'names photo'
+        'count photo'
+        'scroll photo';
+    }
+    .cell--top { grid-area: top; }
+    .cell--names { grid-area: names; border-right: 1px solid var(--line-strong); display: flex; flex-direction: column; justify-content: center; }
+    .cell--photo { grid-area: photo; min-height: 0; border-bottom: 0; } /* el borde inferior lo pone la lámina */
+    .cell--count { grid-area: count; border-right: 1px solid var(--line-strong); }
+    .cell--scroll { grid-area: scroll; border-right: 1px solid var(--line-strong); }
+    .hero__dim { display: block; }
+    .hero__dim--v { right: 10px; top: 50%; writing-mode: vertical-rl; }
+    .hero__dim--h { left: 50%; top: 10px; transform: translateX(-50%); }
+    .hero__names { font-size: clamp(4rem, min(12vw, 22vh), 13rem); }
+    .hero__count b { font-size: clamp(1.9rem, min(3.6vw, 6.5vh), 3.4rem); }
+  }
+</style>

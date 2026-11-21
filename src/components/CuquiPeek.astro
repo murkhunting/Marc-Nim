@@ -1,0 +1,44 @@
+---
+import { cuquiLines } from '../data/site';
+---
+<aside class="peek" data-peek data-lines={JSON.stringify(cuquiLines)} aria-live="polite">
+  <p class="peek__bubble" data-peek-bubble>
+    <span class="peek__who mono">Orión · Promotor</span>
+    <span class="peek__text hand" data-peek-text></span>
+  </p>
+  <button class="peek__cat" data-peek-cat aria-label="Hablar con Orión, el promotor">
+    <img src="/img/cuqui.jpg" alt="" width="298" height="348" />
+  </button>
+</aside>
+
+<style>
+  .peek {
+    position: fixed; right: max(12px, env(safe-area-inset-right)); bottom: 0; z-index: 800;
+    display: flex; align-items: flex-end; gap: 6px;
+    pointer-events: none;
+  }
+  .peek__cat {
+    pointer-events: auto;
+    width: clamp(78px, 9vw, 120px); aspect-ratio: 298 / 300;
+    padding: 0; border: 1.5px solid var(--ink); border-bottom: 0;
+    border-radius: 999px 999px 0 0;    /* arco de ventana ibicenca */
+    background: #fff; overflow: hidden;
+    transform: translateY(105%);
+  }
+  .peek__cat img { width: 100%; height: auto; transform: translateY(-2%); filter: grayscale(1) contrast(1.05); }
+  .peek__bubble {
+    position: relative; margin: 0 0 clamp(54px, 7vw, 86px);
+    max-width: min(240px, 58vw);
+    padding: 10px 14px 12px;
+    background: var(--paper); border: 1.5px solid var(--ink); border-radius: 16px 16px 4px 16px;
+    box-shadow: 4px 4px 0 var(--ink);
+    opacity: 0; transform: translateY(10px) scale(.9); transform-origin: right bottom;
+  }
+  .peek__who { display: block; font-size: 9.5px; color: var(--ink-3); margin-bottom: 2px; }
+  .peek__text { display: block; font-size: 1.35rem; line-height: 1.05; color: var(--ink); }
+  html.reduce .peek__cat { transform: none; }
+  @media (max-width: 600px) {
+    .peek__bubble { max-width: 190px; padding: 8px 12px 10px; margin-bottom: 60px; box-shadow: 3px 3px 0 var(--ink); }
+    .peek__text { font-size: 1.15rem; }
+  }
+</style>

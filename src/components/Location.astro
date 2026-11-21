@@ -1,0 +1,234 @@
+---
+import SheetHead from './SheetHead.astro';
+import { venues } from '../data/site';
+import plano from '../assets/ibiza-plano.svg?raw';
+import fs from 'node:fs';
+import path from 'node:path';
+const list = [venues.church, venues.venue];
+const placePhotos = ['/img/iglesia.jpg', '/img/cancurreu2.webp'];
+// Fotos del carrusel: se leen solas de /public/img/ibiza/ (el orden se baraja en cada visita). Si no hay ninguna, se muestran 5 huecos.
+const photos: string[] = fs
+  .readdirSync(path.join(process.cwd(), 'public/img/ibiza'))
+  .filter((f) => /\.(webp|jpe?g|png|avif)$/i.test(f))
+  .sort()
+  .map((f) => `/img/ibiza/${f}`);
+const slides: (string | null)[] = photos.length ? photos : Array.from({ length: 5 }, () => null);
+---
+<section id="ubicacion" class="loc section--flush" data-flush data-section="ubicacion">
+  <SheetHead
+    n={3}
+    label="Situación y emplazamiento"
+    title={'Ibiza,\nSant Carles'}
+    sub="Ceremonia en la iglesia del pueblo y celebración a 1,5 km, en Can Curreu. Todo en el noreste de la isla, lejos del ruido y cerca del campo."
+    scale="E variable"
+  />
+  <div class="loc__split">
+    <div class="loc__left">
+      <div class="loc__intro">
+        <p class="mono loc__intro-k">Situación · E 1:500.000</p>
+        <h3 class="loc__island-big">Isla de Ibiza</h3>
+        <p class="loc__island-sub">A unos 25 min del aeropuerto y 20 min de Ibiza ciudad, en coche.</p>
+      </div>
+      <div class="loc__mapbox">
+        <div class="loc__north mono" aria-hidden="true">
+          <span>N</span>
+          <svg viewBox="0 0 12 60" width="12" height="60"><path d="M6 60V2M1 10l5-8 5 8" fill="none" stroke="currentColor" stroke-width="1.2" /></svg>
+        </div>
+        <div class="loc__island-map">
+          <Fragment set:html={plano} />
+          <span class="loc__pulse" aria-hidden="true"></span>
+        </div>
+      </div>
+    </div>
+    <div class="loc__right">
+      <div class="loc__slides" data-slides role="group" aria-roledescription="carrusel" aria-label="Fotos de Ibiza">
+        {slides.map((src, i) => (
+          <figure class:list={['loc__slide', { 'is-on': i === 0 }]} data-slide>
+            {src
+              ? <img src={src} alt={`Ibiza, foto ${i + 1}`} loading={i === 0 ? 'eager' : 'lazy'} />
+              : <div class="void loc__ph" style={`--a:${i % 2 ? -32 : 32}deg`}><span class="mono">Foto de Ibiza {String(i + 1).padStart(2, '0')}</span></div>}
+          </figure>
+        ))}
+      </div>
+      <div class="loc__slides-bar">
+        <button type="button" class="loc__arrow" data-prev aria-label="Foto anterior">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+        </button>
+        <button type="button" class="loc__arrow" data-next aria-label="Foto siguiente">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+        </button>
+        <span class="loc__dots" aria-hidden="true">{slides.map((_, i) => <i class:list={{ 'is-on': i === 0 }} data-dot />)}</span>
+      </div>
+    </div>
+  </div>
+  <div class="loc__places">
+    {list.map((v, i) => (
+      <article class:list={['place', { 'place--rev': i % 2 === 0 }]} data-plan data-cuqui-hover={i === 0 ? 'Aquí se dice "sí, quiero". Yo diría "sí, atún".' : 'Aquí hay olivos, jardín y barra libre. Aprobado.'}>
+        <div class="place__text">
+          <div class="place__info">
+            <div class="place__head mono">
+              <span class="place__badge">{String(i + 1).padStart(2, '0')} · {v.label}</span>
+              <span>{v.scale}</span>
+            </div>
+            <h3 class="place__name">{v.name}</h3>
+            <p class="place__sub mono">{v.sub}</p>
+            <p class="place__txt">{v.text}</p>
+            <p class="place__addr">{v.address}</p>
+          </div>
+          <a class="place__btn" href={v.maps} target="_blank" rel="noopener">
+            <span class="place__roll" data-text="Cómo llegar ↗"><span>Cómo llegar ↗</span></span>
+          </a>
+        </div>
+        <div class="place__photo">
+          {placePhotos[i]
+            ? <img src={placePhotos[i]} alt={`Foto de ${v.name}`} loading="lazy" />
+            : <div class="void place__ph" style={`--a:${i % 2 ? -32 : 32}deg`}><span class="mono">Foto · {v.name}</span></div>}
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .loc__split { display: grid; border-bottom: 1px solid var(--frame-line, var(--line-strong)); }
+  .loc__left { display: grid; grid-template-rows: auto 1fr; min-width: 0; }
+  .loc__intro { padding: clamp(20px, 3vw, 36px) var(--pad-x); border-bottom: 1px solid var(--frame-line, var(--line-strong)); }
+  .loc__intro p { margin: 0; }
+  .loc__mapbox { display: flex; align-items: center; justify-content: center; gap: 20px; padding: clamp(24px, 4vw, 48px) var(--pad-x); min-height: 0; }
+  .loc__north { display: grid; justify-items: center; gap: 4px; align-self: start; }
+  .loc__right { position: relative; min-height: 0; aspect-ratio: 4 / 3; border-top: 1px solid var(--frame-line, var(--line-strong)); }
+  .loc__slides { position: absolute; inset: 0; overflow: hidden; touch-action: pan-y; }
+  .loc__slide { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity .7s var(--ease-out); }
+  .loc__slide.is-on { opacity: 1; }
+  .loc__slide img, .loc__ph { width: 100%; height: 100%; object-fit: cover; display: block; border: 0; }
+  .loc__slides-bar { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: stretch; background: var(--paper); border-top: 1px solid var(--frame-line, var(--line-strong)); }
+  .loc__arrow {
+    position: relative; display: grid; place-items: center; width: clamp(64px, 6vw, 84px); height: clamp(52px, 7vh, 68px);
+    padding: 0; background: none; border: 0; border-right: 1px solid var(--frame-line, var(--line-strong)); color: var(--ink);
+    overflow: hidden; isolation: isolate; transition: color .4s var(--ease);
+  }
+  .loc__arrow::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: var(--red);
+    transform: translateY(101%); border-radius: 50% 50% 0 0;
+    transition: transform .5s var(--ease), border-radius .5s var(--ease);
+  }
+  .loc__arrow:hover, .loc__arrow:focus-visible { color: #fff; }
+  .loc__arrow:hover::before, .loc__arrow:focus-visible::before { transform: translateY(0); border-radius: 0; }
+  .loc__arrow svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .loc__dots { display: flex; gap: 6px; align-items: center; margin-left: auto; padding: 0 var(--pad-x); }
+  .loc__dots i { width: 8px; height: 8px; border: 1px solid var(--ink); border-radius: 50%; transition: background .3s; }
+  .loc__dots i.is-on { background: var(--red); border-color: var(--red); }
+  .loc__island-big { font-size: clamp(2.2rem, 5vw, 4.4rem); text-transform: uppercase; line-height: 1; font-weight: 500; margin: 8px 0 !important; }
+  .loc__island-sub { color: var(--ink-2); max-width: 34ch; }
+  .loc__island-map { position: relative; width: min(100%, 520px); aspect-ratio: 900 / 820; }
+  .loc__island-map :global(.plan-svg) { display: block; width: 100%; height: auto; color: var(--ink); }
+  .loc__pulse {
+    position: absolute; left: 84.58%; top: 30.2%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%;
+    background: var(--red);
+  }
+  .loc__pulse::after {
+    content: ''; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--red);
+    animation: pulse 2s var(--ease-out) infinite;
+  }
+  @keyframes pulse { from { transform: scale(1); opacity: 1; } to { transform: scale(3.4); opacity: 0; } }
+
+  .loc__places { display: grid; border-bottom: 1px solid var(--frame-line, var(--line-strong)); }
+  .place { display: grid; min-width: 0; }
+  .place + .place { border-top: 1px solid var(--frame-line, var(--line-strong)); }
+  .place__text { display: grid; grid-template-rows: 1fr auto; min-width: 0; border-bottom: 1px solid var(--frame-line, var(--line-strong)); }
+  .place--rev .place__photo { order: -1; }
+  .place--rev .place__text { border-bottom: 0; border-top: 1px solid var(--frame-line, var(--line-strong)); }
+  .place__info { display: grid; gap: 8px; align-content: start; padding: clamp(20px, 3vw, 36px) var(--pad-x); }
+  .place__head { display: flex; justify-content: space-between; gap: 12px; }
+  .place__badge { color: var(--red); }
+  .place__name { font-size: clamp(1.8rem, 3.6vw, 3rem); font-weight: 500; line-height: 1; text-transform: uppercase; margin: 6px 0 0; }
+  .place__sub, .place__txt, .place__addr { margin: 0; }
+  .place__sub { color: var(--ink-3); }
+  .place__txt { color: var(--ink-2); max-width: 44ch; }
+  .place__addr { font-size: 14px; color: var(--ink-3); }
+
+  /* Botón: mismo efecto que el de la hero */
+  .place__btn {
+    position: relative; display: flex; align-items: center; justify-content: flex-start; overflow: hidden; isolation: isolate;
+    min-height: clamp(64px, 9vh, 84px); padding: 0 var(--pad-x); border-top: 1px solid var(--frame-line, var(--line-strong));
+    font-family: var(--f-futura); font-weight: 500; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase;
+    text-decoration: none; color: var(--ink); transition: color .4s var(--ease);
+  }
+  .place__btn::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: var(--red);
+    transform: translateY(101%); border-radius: 50% 50% 0 0;
+    transition: transform .5s var(--ease), border-radius .5s var(--ease);
+  }
+  .place__btn:hover::before, .place__btn:focus-visible::before { transform: translateY(0); border-radius: 0; }
+  .place__roll { position: relative; display: inline-block; overflow: hidden; line-height: 1.5; }
+  .place__roll > span { display: inline-block; transition: transform .45s var(--ease); }
+  .place__roll::after { content: attr(data-text); position: absolute; left: 0; top: 100%; color: #fff; transition: transform .45s var(--ease); }
+  .place__btn:hover .place__roll > span, .place__btn:hover .place__roll::after,
+  .place__btn:focus-visible .place__roll > span, .place__btn:focus-visible .place__roll::after { transform: translateY(-100%); }
+
+  .place__photo { position: relative; min-height: 0; aspect-ratio: 4 / 3; }
+  .place__ph { position: absolute; inset: 0; border: 0; }
+  .place__photo :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  @media (min-width: 760px) {
+    .loc__split { grid-template-columns: 1fr 1fr; height: calc(100vh - var(--nav-h)); min-height: 560px; }
+    .loc__right { aspect-ratio: auto; border-top: 0; border-left: 1px solid var(--frame-line, var(--line-strong)); }
+    .loc__left { grid-template-rows: auto minmax(0, 1fr); }
+    .loc__mapbox { overflow: hidden; }
+    .loc__island-map { height: 100%; width: auto; max-width: 100%; }
+    .loc__island-map :global(.plan-svg) { height: 100%; }
+    /* Dos filas de 50vh: texto + foto, y debajo foto + texto (invertido) */
+    .place { grid-template-columns: 1fr 1fr; height: 50vh; min-height: 380px; }
+    .place__text, .place--rev .place__text { border-top: 0; border-bottom: 0; }
+    .place:not(.place--rev) .place__text { border-right: 1px solid var(--frame-line, var(--line-strong)); }
+    .place--rev .place__text { border-left: 1px solid var(--frame-line, var(--line-strong)); }
+    .place__photo { aspect-ratio: auto; }
+  }
+</style>
+
+<script>
+  const box = document.querySelector<HTMLElement>('[data-slides]');
+  if (box) {
+    const slides = [...box.querySelectorAll<HTMLElement>('[data-slide]')];
+    // Orden aleatorio en cada visita (Fisher–Yates)
+    for (let k = slides.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [slides[k], slides[j]] = [slides[j], slides[k]];
+    }
+    slides.forEach((el) => box.appendChild(el));
+    slides.forEach((el, k) => {
+      el.classList.toggle('is-on', k === 0);
+      const img = el.querySelector('img');
+      if (img && k < 2) img.loading = 'eager';
+    });
+    const dots = [...document.querySelectorAll<HTMLElement>('[data-dot]')];
+    let i = 0;
+    let t = 0;
+    let visible = true;
+    const auto = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const show = (n: number) => {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((el, k) => el.classList.toggle('is-on', k === i));
+      dots.forEach((el, k) => el.classList.toggle('is-on', k === i));
+    };
+    const play = () => {
+      window.clearInterval(t);
+      if (auto && visible && slides.length > 1) t = window.setInterval(() => show(i + 1), 2000);
+    };
+    const go = (n: number) => { show(n); play(); };
+    document.querySelector('[data-prev]')?.addEventListener('click', () => go(i - 1));
+    document.querySelector('[data-next]')?.addEventListener('click', () => go(i + 1));
+    // Deslizar con el dedo / arrastrar
+    let x0: number | null = null;
+    box.addEventListener('pointerdown', (e) => { x0 = e.clientX; });
+    box.addEventListener('pointerup', (e) => {
+      if (x0 !== null && Math.abs(e.clientX - x0) > 40) go(i + (e.clientX < x0 ? 1 : -1));
+      x0 = null;
+    });
+    box.addEventListener('pointercancel', () => { x0 = null; });
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; play(); }).observe(box);
+    play();
+  }
+</script>

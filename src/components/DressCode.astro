@@ -1,0 +1,135 @@
+---
+import SheetHead from './SheetHead.astro';
+import { dress } from '../data/site';
+
+const hanger = '<path d="M60 22a6 6 0 1 1 6-6c0 3-6 4-6 8v4M60 28 20 44M60 28l40 16"/>';
+const figs: Record<string, string> = {
+  suit: `${hanger}
+    <path d="M24 46 18 168h84L96 46"/>
+    <path d="M24 46 8 154M96 46l16 108"/>
+    <path d="M46 44l14 54 14-54"/>
+    <path d="M56 50h8l2 34-6 8-6-8z"/>
+    <path d="M46 44 38 60l10 6M74 44l8 16-10 6"/>
+    <circle cx="60" cy="112" r="1.8"/><circle cx="60" cy="128" r="1.8"/>
+    <path d="M30 120h16M74 96h12"/>`,
+  jacket: `${hanger}
+    <path d="M24 46 18 150h84L96 46"/>
+    <path d="M24 46 8 136M96 46l16 90"/>
+    <path d="M48 44l12 16 12-16"/>
+    <path d="M48 44 36 66l14 6 10-12M72 44l12 22-14 6-10-12"/>
+    <path d="M60 60v90"/>
+    <circle cx="60" cy="78" r="1.8"/><circle cx="60" cy="96" r="1.8"/><circle cx="60" cy="114" r="1.8"/>
+    <path d="M76 104h12"/>`,
+  long: `${hanger}
+    <path d="M44 44l4 20M76 44l-4 20"/>
+    <path d="M48 64q12 6 24 0l-2 28q-10 4-20 0z"/>
+    <path d="M50 92 20 192q40 8 80 0L70 92"/>
+    <path d="M58 96 50 194M64 96l8 98M54 96 36 192M66 96l20 96"/>`,
+  short: `${hanger}
+    <path d="M42 44q-6 8-8 20l10 4M78 44q6 8 8 20l-10 4"/>
+    <path d="M42 44q18 10 36 0l-4 46q-14 5-28 0z"/>
+    <path d="M46 90 30 146q30 10 60 0L74 90"/>
+    <path d="M56 94l-6 54M64 94l6 54"/>
+    <path d="M46 90q14 6 28 0"/>`,
+};
+---
+<section id="dresscode" class="dress section--flush" data-flush data-section="dresscode">
+  <SheetHead
+    n={5}
+    label="Pliego de condiciones · vestuario"
+    title={'Dress\ncode'}
+    sub="Elegante, pero libre. Dentro de lo formal, poneos lo que os haga sentir increíbles. Nosotros te damos unas recomendaciones:"
+  />
+  <div class="dress__grid">
+    {dress.map((d) => (
+      <article class="fig" data-cuqui-hover={d.fig === 'suit' ? 'Traje aprobado. Pero el esmoquin bicolor es mío.' : d.fig === 'jacket' ? 'Americana sin corbata. Yo tampoco llevo corbata. Ni pantalones.' : d.fig === 'long' ? 'Largo, precioso. Cuidado con mi cola. Digo, la vuestra.' : 'Corto y formal. Ideal para bailar hasta las 2.'}>
+        <div class="fig__head mono">
+          <span>Ficha <b class="red">{d.code}</b></span>
+        </div>
+        <div class="fig__draw">
+          <svg viewBox="0 0 120 200" aria-hidden="true" set:html={figs[d.fig]} />
+        </div>
+        <h3 class="fig__title">{d.title}</h3>
+        <p class="fig__text">{d.text}</p>
+      </article>
+    ))}
+  </div>
+
+  <div class="dress__extra">
+      <article class="weather" data-reveal>
+        <p class="mono weather__label">Condiciones climáticas · 16 oct · Ibiza</p>
+        <div class="weather__temps">
+          <div>
+            <span class="weather__n">~24°</span>
+            <span class="mono">De día</span>
+          </div>
+          <div class="weather__bar" aria-hidden="true"><i></i></div>
+          <div>
+            <span class="weather__n">~16°</span>
+            <span class="mono">De noche</span>
+          </div>
+        </div>
+        <p class="weather__text">
+          En octubre en Ibiza no suele hacer frío, pero <strong>ya no es verano</strong>: cuando se pone el sol, refresca.
+        </p>
+      </article>
+
+      <article class="rules" data-reveal>
+        <p class="mono rules__label">Restricciones y recomendaciones del promotor</p>
+        <ul>
+          <li><span class="rules__x" aria-hidden="true">✕</span><span><strong>Blanco total.</strong> Reservado a la novia.</span></li>
+          <li><span class="rules__x" aria-hidden="true">✕</span><span><strong>Color Verde Eucalipto / Oliva.</strong> Reservado a las damas de honor.</span></li>
+          <li><span class="rules__x" aria-hidden="true">✕</span><span><strong>Esmoquin felino.</strong> Reservado al promotor.</span></li>
+          <li><span class="rules__x" aria-hidden="true">!</span><span><strong>Tacón de aguja.</strong> Habrá jardín y el césped no perdona. Mejor tacón ancho.</span></li>
+          <li><span class="rules__x" aria-hidden="true">!</span><span><strong>Chaqueta, chal, pashmina…</strong> Lo agradeceréis por la noche.</span></li>
+        </ul>
+      </article>
+  </div>
+</section>
+
+<style>
+  /* Cuatro fichas pegadas bajo el título, sin huecos: comparten sus bordes */
+  .dress__grid { display: grid; grid-template-columns: repeat(2, 1fr); }
+  .fig {
+    display: grid; gap: 8px; align-content: start; min-width: 0;
+    padding: 14px var(--pad-x) 18px;
+    border-right: 1px solid var(--line-strong); border-bottom: 1px solid var(--frame-line, var(--line-strong));
+  }
+  .fig:nth-child(2n) { border-right: 0; }
+  /* Hover: el dibujo crece un poco (sin cambio de color) */
+  .fig__draw svg { transition: transform .5s var(--ease-out); }
+  .fig:hover .fig__draw svg { transform: scale(1.1); }
+  .fig__head { display: flex; justify-content: space-between; border-bottom: 1px solid var(--line-strong); padding-bottom: 8px; }
+  .fig__head b { font-weight: 500; }
+  .fig__draw {
+    display: grid; place-items: center; padding: 16px 0;
+  }
+  .fig__draw svg { width: min(110px, 44%); height: auto; fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .fig__title { margin: 2px 0 0; font-size: clamp(1.15rem, 2vw, 1.55rem); font-weight: 500; text-transform: uppercase; line-height: 1.05; }
+  .fig__text { margin: 0; color: var(--ink-2); font-size: .95rem; }
+
+  /* Clima y restricciones: pegadas a las fichas, sin huecos, mitad y mitad */
+  .dress__extra { display: grid; border-bottom: 1px solid var(--frame-line, var(--line-strong)); }
+  .weather { padding: clamp(20px, 3vw, 36px) var(--pad-x); display: grid; gap: 18px; align-content: start; background: var(--paper); color: var(--ink); }
+  .weather__label { margin: 0; color: var(--ink-3); }
+  .weather__temps { display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; }
+  .weather__temps > div:not(.weather__bar) { display: grid; }
+  .weather__n { font-size: clamp(3rem, 8vw, 5.5rem); line-height: .9; letter-spacing: -0.03em; }
+  .weather__bar { height: 6px; border-radius: 99px; background: linear-gradient(90deg, #f0a64b, var(--red) 40%, #3a5a8a); position: relative; }
+  .weather__text { margin: 0; color: var(--ink-2); max-width: 52ch; }
+  .weather__text strong { color: var(--ink); }
+
+  .rules { border: 0; border-top: 1px solid var(--line-strong); padding: clamp(20px, 3vw, 36px) var(--pad-x); position: relative; }
+  .rules__label { margin: 0 0 18px; color: var(--ink-3); }
+  .rules ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .rules li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; }
+  .rules__x { display: grid; place-items: center; width: 26px; height: 26px; border: 1.5px solid var(--red); color: var(--red); border-radius: 50%; font-size: 13px; font-weight: 700; }
+
+  @media (min-width: 760px) {
+    .dress__grid { grid-template-columns: repeat(4, 1fr); }
+    .fig:nth-child(2n) { border-right: 1px solid var(--line-strong); }
+    .fig:nth-child(4n) { border-right: 0; }
+    .dress__extra { grid-template-columns: 1fr 1fr; }
+    .rules { border-top: 0; border-left: 1px solid var(--line-strong); }
+  }
+</style>

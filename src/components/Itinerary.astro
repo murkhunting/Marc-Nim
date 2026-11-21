@@ -1,0 +1,129 @@
+---
+import SheetHead from './SheetHead.astro';
+import { itinerary } from '../data/site';
+
+const START = 17 * 60;
+const SPAN = 9 * 60 + 60; // 17:00 → 03:00
+const toMin = (t: string) => {
+  const [h, m] = t.split(':').map(Number);
+  let v = h * 60 + m;
+  if (v < START) v += 24 * 60;
+  return v - START;
+};
+const bars = itinerary.map((it) => {
+  const a = toMin(it.time);
+  const b = it.end === '+' ? SPAN : toMin(it.end);
+  return { left: (a / SPAN) * 100, width: Math.max(((b - a) / SPAN) * 100, 2), open: it.end === '+' };
+});
+
+const icons: Record<string, string> = {
+  church: '<path d="M16 3v6M13 6h6M8 30V17l8-7 8 7v13M4 30h24M13 30v-6a3 3 0 0 1 6 0v6"/>',
+  door: '<path d="M7 30V8a9 9 0 0 1 18 0v22M4 30h24M19 19h.01"/>',
+  glass: '<path d="M9 4h14l-1 8a6 6 0 0 1-12 0L9 4ZM16 18v10M11 28h10M10 9h12"/>',
+  plate: '<circle cx="16" cy="17" r="10"/><circle cx="16" cy="17" r="5.5"/><path d="M3 4v8M5 4v8M3 12v16M29 4c-2 2-2 8 0 9v15"/>',
+  disco: '<circle cx="16" cy="18" r="10"/><path d="M16 2v6M6 18h20M16 8c-3 3-4 6-4 10s1 7 4 10M16 8c3 3 4 6 4 10s-1 7-4 10M8 12h16M8 24h16"/>',
+  moon: '<path d="M24 21A11 11 0 1 1 13 6a8.5 8.5 0 0 0 11 15Z"/><path d="M24 5v4M22 7h4"/>',
+};
+---
+<section id="itinerario" class="iti section--flush" data-flush data-section="itinerario" data-iti>
+  <SheetHead
+    n={4}
+    label="Planning de obra"
+    title={'El día de la boda'}
+    sub="Del sí, quiero a lo que surja. Horario provisional: os confirmaremos las horas exactas más adelante."
+    scale="17:00 → 02:00+"
+  />
+  <div class="sheet-content iti__sky" data-iti-sky>
+    <div class="iti__stars" aria-hidden="true" data-iti-stars>
+      {Array.from({ length: 40 }).map((_, i) => (
+        <i style={`left:${(i * 37) % 100}%;top:${(i * 53) % 100}%;--d:${(i % 7) * 0.4}s`} />
+      ))}
+    </div>
+
+    <div class="iti__body">
+      <div class="iti__rail" aria-hidden="true">
+        <span class="iti__fill" data-iti-fill></span>
+        <span class="iti__orb" data-iti-orb>
+          <svg class="iti__sun" viewBox="0 0 40 40"><circle cx="20" cy="20" r="8" /><g stroke-width="2" stroke-linecap="round">{Array.from({ length: 8 }).map((_, i) => <line x1="20" y1="3" x2="20" y2="8" transform={`rotate(${i * 45} 20 20)`} />)}</g></svg>
+          <svg class="iti__moon" viewBox="0 0 40 40"><path d="M28 25A11 11 0 1 1 17 9a8.5 8.5 0 0 0 11 16Z" /></svg>
+        </span>
+      </div>
+
+      <ol class="iti__list">
+        {itinerary.map((it, i) => (
+          <li class="iti__item" data-iti-item>
+            <div class="iti__time">
+              <span class="iti__hour">{it.time}</span>
+              <span class="mono iti__end">→ {it.end === '+' ? '∞' : it.end}</span>
+            </div>
+            <div class="iti__content">
+              <div class="iti__head">
+                <svg class="iti__icon" viewBox="0 0 32 32" aria-hidden="true" set:html={icons[it.icon]} />
+                <div>
+                  <h3 class="iti__title">{it.title}</h3>
+                  <p class="mono iti__place">{it.place}</p>
+                </div>
+              </div>
+              <p class="iti__text">{it.text}</p>
+              <div class="iti__gantt" aria-hidden="true">
+                <span class:list={['iti__bar', { 'is-open': bars[i].open }]} style={`left:${bars[i].left}%;width:${bars[i].width}%`} />
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Solo la parte del planning cambia de cielo; el título y el subtítulo conservan los colores de la web */
+  .iti__sky {
+    --bg: #5aa8e2; --fg: #ffffff; --muted: rgba(255,255,255,.85); --ln: rgba(255,255,255,.4);
+    position: relative; overflow: hidden; background: var(--bg); color: var(--fg);
+  }
+  .iti__sky > :not(.iti__stars) { position: relative; }
+  .iti__stars { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+  .iti__stars i {
+    position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #ebebed;
+    animation: twinkle 3s ease-in-out var(--d) infinite;
+  }
+  @keyframes twinkle { 50% { opacity: .2; } }
+
+  .iti__body { position: relative; display: grid; grid-template-columns: 34px 1fr; gap: 0 18px; }
+  .iti__rail { position: relative; }
+  .iti__rail::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--ln); }
+  .iti__fill { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; margin-left: -.5px; background: var(--fg); transform-origin: top; transform: scaleY(0); }
+  .iti__orb {
+    position: absolute; left: 50%; top: 0; width: 34px; height: 34px; margin-left: -17px;
+    display: grid; place-items: center; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--fg);
+  }
+  .iti__orb svg { position: absolute; width: 24px; height: 24px; }
+  .iti__sun { fill: #fff; stroke: #fff; }
+  .iti__moon { fill: #ebebed; opacity: 0; }
+
+  .iti__list { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(40px, 6vw, 72px); }
+  .iti__item { display: grid; gap: 10px; }
+  .iti__time { display: flex; align-items: baseline; gap: 12px; }
+  .iti__hour { font-size: clamp(2.6rem, 8vw, 5.4rem); line-height: .9; font-weight: 400; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .iti__end { color: var(--muted); }
+  .iti__head { display: flex; gap: 14px; align-items: center; }
+  .iti__icon { width: 40px; height: 40px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+  .iti__title { margin: 0; font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
+  .iti__place { margin: 4px 0 0; color: var(--muted); }
+  .iti__text { margin: 10px 0 0; color: var(--muted); max-width: 44ch; font-size: 1.05rem; }
+  .iti__gantt { position: relative; height: 8px; margin-top: 14px; border-left: 1px solid var(--ln); border-right: 1px solid var(--ln);
+    background: repeating-linear-gradient(90deg, var(--ln) 0 1px, transparent 1px calc(100% / 10)); max-width: 520px; }
+  .iti__bar { position: absolute; top: 1px; bottom: 1px; background: var(--fg); transform-origin: left; }
+  .iti__bar.is-open { background: linear-gradient(90deg, var(--red), transparent); }
+
+  @media (min-width: 900px) {
+    .iti__body { grid-template-columns: 1fr 60px 1.25fr; gap: 0 40px; }
+    .iti__rail { grid-column: 2; grid-row: 1; }
+    .iti__list { grid-column: 1 / -1; grid-row: 1; }
+    .iti__item { grid-template-columns: 1fr 60px 1.25fr; gap: 0 40px; align-items: start; }
+    .iti__time { grid-column: 1; justify-content: flex-end; flex-direction: column; align-items: flex-end; text-align: right; }
+    .iti__content { grid-column: 3; }
+    .iti__hour { font-size: clamp(4rem, 7vw, 7rem); }
+  }
+</style>

@@ -1,0 +1,130 @@
+---
+import SheetHead from './SheetHead.astro';
+import Paw from './Paw.astro';
+import { faqs, wedding } from '../data/site';
+---
+<section id="faq" class="faq section--flush" data-flush data-section="faq">
+  <SheetHead
+    n={8}
+    label="Consultorio del promotor"
+    title={'Preguntas\nfrecuentes'}
+    scale="Atiende: Orión"
+  />
+  <div class="sheet-content">
+
+    <div class="faq__grid">
+      <aside class="host" data-reveal>
+        <button class="host__frame" data-pet aria-label="Acariciar a Orión" data-cursor-text="Acariciar">
+          <span class="host__img" data-pet-img>
+            <img src="/img/orion1.webp" alt="Orión, gato tuxedo, promotor de la boda" width="1000" height="1179" loading="lazy" />
+            <!-- Gafas de píxel (las del meme, sin patilla): caen en la primera caricia y se quedan puestas -->
+            <svg class="host__glasses" data-glasses viewBox="0 0 768 120" shape-rendering="crispEdges" aria-hidden="true">
+              <path d="M48 0h720v12.4h-720zM48 12h720v12.4h-720zM84 24h24v12.4h-24zM120 24h12v12.4h-12zM144 24h228v12.4h-228zM480 24h24v12.4h-24zM516 24h12v12.4h-12zM540 24h228v12.4h-228zM84 36h36v12.4h-36zM132 36h12v12.4h-12zM156 36h216v12.4h-216zM480 36h36v12.4h-36zM528 36h12v12.4h-12zM552 36h216v12.4h-216zM108 48h24v12.4h-24zM144 48h12v12.4h-12zM168 48h180v12.4h-180zM504 48h24v12.4h-24zM540 48h12v12.4h-12zM564 48h180v12.4h-180zM108 60h36v12.4h-36zM156 60h12v12.4h-12zM180 60h168v12.4h-168zM504 60h36v12.4h-36zM552 60h12v12.4h-12zM576 60h168v12.4h-168zM132 72h24v12.4h-24zM168 72h12v12.4h-12zM192 72h132v12.4h-132zM528 72h24v12.4h-24zM564 72h12v12.4h-12zM588 72h132v12.4h-132zM132 84h36v12.4h-36zM180 84h12v12.4h-12zM204 84h120v12.4h-120zM528 84h36v12.4h-36zM576 84h12v12.4h-12zM600 84h120v12.4h-120zM156 96h144v12.4h-144zM552 96h144v12.4h-144zM156 108h144v12.4h-144zM552 108h144v12.4h-144z" fill="#000" />
+              <path d="M108 24h12v12.4h-12zM132 24h12v12.4h-12zM504 24h12v12.4h-12zM528 24h12v12.4h-12zM120 36h12v12.4h-12zM144 36h12v12.4h-12zM516 36h12v12.4h-12zM540 36h12v12.4h-12zM132 48h12v12.4h-12zM156 48h12v12.4h-12zM528 48h12v12.4h-12zM552 48h12v12.4h-12zM144 60h12v12.4h-12zM168 60h12v12.4h-12zM540 60h12v12.4h-12zM564 60h12v12.4h-12zM156 72h12v12.4h-12zM180 72h12v12.4h-12zM552 72h12v12.4h-12zM576 72h12v12.4h-12zM168 84h12v12.4h-12zM192 84h12v12.4h-12zM564 84h12v12.4h-12zM588 84h12v12.4h-12z" fill="#fff" />
+            </svg>
+          </span>
+          <span class="host__hearts" data-pet-fx aria-hidden="true"></span>
+        </button>
+        <div class="host__pets">
+          <span class="mono host__pets-label">Caricias recibidas</span>
+          <span class="host__counter" data-pet-count role="img" aria-live="polite" aria-label="0"></span>
+        </div>
+        <div class="host__card">
+          <p class="mono host__role">Promotor y consultor</p>
+          <p class="host__name">{wedding.promoter}</p>
+          <p class="host__bio">
+            Gato tuxedo, especialista en supervisión de obra desde el sofá. Ha aprobado este proyecto.
+          </p>
+        </div>
+        <p class="faq__more">¿Otra duda? Escríbenos y Orión la traslada a la dirección de obra.</p>
+      </aside>
+
+      <div class="acc" data-acc>
+        {faqs.map((f, i) => (
+          <div class="acc__item" data-acc-item>
+            <h3 class="acc__h">
+              <button class="acc__btn" aria-expanded="false" aria-controls={`faq-${i}`} id={`faq-b-${i}`} data-acc-btn>
+                <span class="mono acc__n">Q{String(i + 1).padStart(2, '0')}</span>
+                <span class="acc__q">{f.q}</span>
+                <span class="acc__icon" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="acc__panel" id={`faq-${i}`} role="region" aria-labelledby={`faq-b-${i}`} data-acc-panel hidden>
+              <div class="acc__a">
+                <p>{f.a}</p>
+                <span class="acc__sign"><Paw size={18} /> <span class="hand">C.</span></span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq .sheet-content { padding: 0; }
+  .faq__grid { display: grid; }
+  .host { display: flex; flex-direction: column; }
+  .host__card { padding: clamp(18px, 2.4vw, 28px) var(--pad-x) 0; }
+  /* Foto a todo el ancho de la columna, con borde inferior */
+  .host__frame {
+    position: relative; display: block; width: 100%; padding: 0; border: 0; border-bottom: 1px solid var(--frame-line, var(--line-strong));
+    background: var(--paper-2); overflow: hidden; height: 410px; display: flex; justify-content: center; align-items: flex-end; cursor: pointer;
+  }
+  .host__img { position: relative; display: block; width: 275px; max-width: 100%; flex: none; transform-origin: 50% 100%; transition: transform .8s var(--ease-out); }
+  .host__img img { display: block; width: 100%; height: auto; }
+  .host__frame:hover .host__img { transform: scale(1.04); }
+  .host__frame:active .host__img { transform: scale(1.01); }
+  /* Gafas de píxel centradas sobre los ojos del gato (54 % / 44 %) */
+  .host__glasses { position: absolute; left: 51.5%; top: 44.5%; width: 96%; height: auto; opacity: 0; pointer-events: none; }
+  .host__hearts { position: absolute; inset: 0; pointer-events: none; }
+  .host__card { display: grid; gap: 6px; }
+  .host__card p { margin: 0; }
+  .host__role { color: var(--red); }
+  .host__name { font-size: clamp(1.2rem, 2.4vw, 1.7rem); font-weight: 600; line-height: 1.1; text-transform: uppercase; }
+
+  .host__bio { color: var(--ink-2); font-size: .98rem; max-width: 36ch; }
+  /* Caricias: etiqueta a la izquierda y contador mecánico a la derecha, con borde entre ambos */
+  .host__pets { display: flex; align-items: stretch; justify-content: space-between; border-bottom: 1px solid var(--frame-line, var(--line-strong)); }
+  .host__pets-label { display: flex; align-items: center; padding: 14px var(--pad-x); font-size: 14px; letter-spacing: .06em; color: var(--ink-2); }
+  .host__counter { display: flex; align-items: center; gap: 3px; padding: 10px var(--pad-x); border-left: 1px solid var(--frame-line, var(--line-strong)); }
+  .host__counter :global(.odo) { position: relative; width: 30px; height: 42px; overflow: hidden; border-radius: 3px; background: #fff; color: var(--ink); border: 1px solid rgba(23, 25, 29, .18); }
+  .host__counter :global(.odo__strip) { display: block; transition: transform .7s cubic-bezier(.3, 1.35, .5, 1); will-change: transform; }
+  .host__counter :global(.odo__strip.no-anim) { transition: none; }
+  .host__counter :global(.odo__strip i) { display: block; height: 40px; line-height: 40px; text-align: center; font: 500 24px/40px var(--f-mono); font-style: normal; }
+
+  .acc { border-top: 1px solid var(--frame-line, var(--line-strong)); min-width: 0; }
+  .acc { display: flex; flex-direction: column; }
+  .acc__item { flex: 1 1 auto; display: flex; flex-direction: column; }
+  .acc__h { flex: 1 1 auto; display: flex; }
+  .acc__item { border-bottom: 1px solid var(--frame-line, var(--line-strong)); }
+  .acc__item:last-of-type { border-bottom: 0; }
+  .acc__h { margin: 0; }
+  .acc__btn {
+    width: 100%; flex: 1 1 auto; display: grid; grid-template-columns: 40px 1fr 28px; gap: 10px; align-items: center;
+    padding: 20px var(--pad-x); background: none; border: 0; text-align: left;
+  }
+  .acc__n { color: var(--ink-3); transition: color .3s; }
+  .acc__q { font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 500; line-height: 1.2; transition: transform .4s var(--ease); }
+  .acc__btn:hover .acc__q { transform: translateX(6px); }
+  .acc__btn[aria-expanded='true'] .acc__n { color: var(--red); }
+  .acc__icon { position: relative; width: 28px; height: 28px; }
+  .acc__icon::before, .acc__icon::after { content: ''; position: absolute; left: 50%; top: 50%; width: 11px; height: 1.5px; background: currentColor; transform: translate(-50%, -50%); transition: transform .4s var(--ease); }
+  .acc__icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+  .acc__btn[aria-expanded='true'] .acc__icon { color: var(--red); }
+  .acc__btn[aria-expanded='true'] .acc__icon::after { transform: translate(-50%, -50%) rotate(0); }
+  .acc__panel { overflow: hidden; }
+  .acc__a { padding: 0 var(--pad-x) 22px calc(var(--pad-x) + 50px); display: grid; gap: 8px; }
+  .acc__a p { margin: 0; color: var(--ink-2); max-width: 58ch; font-size: 1.05rem; }
+  .acc__sign { display: inline-flex; align-items: center; gap: 6px; color: var(--red); font-size: 1.4rem; }
+  .faq__more { margin: 0; padding: 18px var(--pad-x) 24px; color: var(--ink-3); }
+
+  @media (min-width: 900px) {
+    .faq__grid { grid-template-columns: 440px 1fr; align-items: stretch; }
+    /* La columna de Orión mide la pantalla y se queda fija mientras se abren preguntas; la línea divisoria la dibuja la columna de preguntas (toda su altura) */
+    .host { position: sticky; top: var(--nav-h); align-self: start; height: calc(100vh - var(--nav-h)); min-height: min-content; }
+    .acc { border-left: 1px solid var(--frame-line, var(--line-strong)); }
+    .acc { border-top: 0; }
+  }
+</style>
