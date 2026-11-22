@@ -29,6 +29,7 @@ export function initNav() {
       trigger: sec,
       start: 'top 45%',
       end: 'bottom 45%',
+      refreshPriority: -1, // se calcula después de los bloques fijos (pin), para contar su recorrido
       onToggle: (self) => {
         if (!self.isActive) return;
         links.forEach((l) => l.classList.toggle('is-active', l.dataset.navLink === sec.id));

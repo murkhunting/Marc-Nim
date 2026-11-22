@@ -3,6 +3,8 @@ import { wedding } from '../data/site';
 ---
 <footer class="foot">
   <div class="wrap">
+    <p class="foot__note"><span class="foot__msg">¡Asistencia altamente recomendada!</span>&nbsp;<span class="foot__name">– Marc &amp; Nim</span></p>
+
     <div class="foot__big" aria-hidden="true" data-foot-big><span>16.10.27</span></div>
 
     <div class="foot__bar mono">
@@ -16,9 +18,18 @@ import { wedding } from '../data/site';
 </footer>
 
 <style>
-  .foot { padding: var(--nav-h) var(--gutter) 0; background: var(--paper); position: relative; overflow: hidden; }
+  .foot { padding: 0 var(--gutter); background: var(--paper); position: relative; overflow: hidden; }
   .foot .wrap { max-width: none; }
+  /* Hueco separador (la altura del header): texto con la tipografía del logo, a la derecha y centrado en vertical */
+  .foot__note {
+    margin: 0; height: var(--nav-h); display: flex; align-items: center; justify-content: flex-end; padding: 0 var(--pad-x);
+    font-family: var(--f-rough); font-weight: 400; font-size: clamp(27px, 2.9vw, 40px); line-height: 1; text-align: right; color: var(--ink);
+  }
   /* Fecha: rellena, alineada a la izquierda, ocupa todo el ancho y lleva borde superior */
+  /* La frase en Jost; "Marc & Nim" mantiene la tipografía del logo */
+  .foot__name { white-space: nowrap; }
+  @media (max-width: 520px) { .foot__note { font-size: 24px; } .foot__msg { font-size: .62em; } }
+  .foot__msg { font-family: var(--f-sans); font-weight: 500; font-size: .525em; letter-spacing: .01em; margin-right: .1em; }
   .foot__big {
     container-type: inline-size; margin: 0; padding: clamp(10px, 2vw, 28px) var(--pad-x) clamp(14px, 2.4vw, 32px);
     border-top: 1px solid var(--frame-line, var(--line-strong)); text-align: left; overflow: hidden;

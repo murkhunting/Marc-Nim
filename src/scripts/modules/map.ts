@@ -93,11 +93,19 @@ export function initMap() {
     }, 140);
   }, { passive: true });
 
+  // La última ficha visible no dibuja borde inferior (lo pone el cierre de la lámina: sin doble línea)
+  const markLast = () => {
+    items.forEach((i) => i.removeAttribute('data-last'));
+    items.filter((i) => !i.hidden).at(-1)?.setAttribute('data-last', '');
+  };
+  markLast();
+
   // Filtros
   chips.forEach((c) => c.addEventListener('click', () => {
     const f = c.dataset.filter!;
     chips.forEach((x) => { x.classList.toggle('is-on', x === c); x.setAttribute('aria-pressed', String(x === c)); });
     items.forEach((i) => (i.hidden = f !== 'all' && i.dataset.cat !== f));
+    markLast();
     if (!map) return;
     const pts: [number, number][] = [];
     markers.forEach((m, id) => {

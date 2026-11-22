@@ -113,7 +113,8 @@ const catLabel = Object.fromEntries(spotCats.map((c) => [c.id, c.label]));
     .guide__map { height: 100%; min-height: 0; }
     .guide__list { border-top: 0; grid-auto-flow: row; grid-auto-columns: auto; overflow: visible; scroll-snap-type: none; }
     .spot { border-right: 0; border-bottom: 1px solid var(--frame-line, var(--line-strong)); }
-    .guide__list { margin-bottom: -1px; }
+    /* la última ficha visible no dibuja su línea inferior: la pone el cierre de la lámina */
+    .spot[data-last] { border-bottom-color: transparent; }
   }
 
   /* Leaflet (estilos globales para los pines) */

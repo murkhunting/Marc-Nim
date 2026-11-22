@@ -9,6 +9,9 @@ const RANDOM = [
   'No me toques el plano. Bueno, vale.',
 ];
 
+// Orión nunca sale entero: se queda con el borde inferior (recortado en la foto) fuera de la pantalla
+const REST = 11; // % de su alto que queda oculto
+
 export function initPeek() {
   const root = document.querySelector<HTMLElement>('[data-peek]');
   if (!root) return;
@@ -29,7 +32,7 @@ export function initPeek() {
     if (!visible) {
       visible = true;
       gsap.killTweensOf([cat, bubble]);
-      gsap.to(cat, { yPercent: 0, y: 0, duration: reduce ? 0 : 0.7, ease: 'back.out(1.6)' });
+      gsap.to(cat, { yPercent: REST, y: 0, duration: reduce ? 0 : 0.7, ease: 'back.out(1.1)' });
       gsap.fromTo(bubble, { opacity: 0, y: 10, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, delay: reduce ? 0 : 0.25, ease: 'back.out(2)' });
     } else {
       gsap.fromTo(bubble, { scale: 0.94 }, { scale: 1, duration: 0.35, ease: 'back.out(3)' });
@@ -40,7 +43,7 @@ export function initPeek() {
     if (!visible) return;
     visible = false;
     gsap.to(bubble, { opacity: 0, y: 10, scale: 0.9, duration: 0.25 });
-    gsap.to(cat, { yPercent: reduce ? 0 : 105, duration: 0.6, ease: 'power3.in', delay: 0.1 });
+    gsap.to(cat, { yPercent: reduce ? REST : 105, duration: 0.6, ease: 'power3.in', delay: 0.1 });
   };
 
   if (!reduce) gsap.set(cat, { yPercent: 105 });
@@ -55,6 +58,7 @@ export function initPeek() {
     ScrollTrigger.create({
       trigger: sec,
       start: 'top 55%',
+      refreshPriority: -1,
       onEnter: () => {
         const id = sec.dataset.section!;
         if (!ready || seen.has(id) || !lines[id]) return;

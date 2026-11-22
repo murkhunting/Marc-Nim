@@ -7,20 +7,20 @@ import { story } from '../data/site';
     n={2}
     label="Memoria descriptiva"
     title="Nuestra historia"
-    sub="Todo proyecto tiene sus fases. El nuestro ha tenido estudio previo, anteproyecto, una ampliación felina y, por fin, licencia."
+    sub="Memoria redactada por el promotor. Once fases, de la toma de datos a la inauguración, con traslado transatlántico incluido."
   />
 
   <div class="story__pin" data-story-pin>
     <div class="story__track" data-story-track>
       {story.map((s, i) => (
-        <article class="story-card" data-story-card {...(s.cuqui ? { 'data-cuqui-hover': 'Fase 03: la más importante. Fin de la discusión.' } : {})}>
+        <article class="story-card" data-story-card data-cuqui-hover={s.hover}>
           <div class="story-card__meta mono">
             <span><b class="red">{s.phase}</b> · {s.tag}</span>
             <span>{s.year}</span>
           </div>
           {s.img ? (
-            <figure class:list={['story-card__img', { 'is-cat': s.cuqui }]}>
-              <img src={s.img} alt={s.title} loading="lazy" />
+            <figure class:list={['story-card__img', { 'is-cutout': s.cutout }]}>
+              <img src={s.img} alt={s.title} loading="lazy" style={s.pos ? `object-position:${s.pos}` : undefined} />
             </figure>
           ) : (
             <div class="story-card__img void" style={`--a:${i % 2 ? -32 : 32}deg`}>
@@ -47,18 +47,23 @@ import { story } from '../data/site';
   /* Fases como tarjetas pegadas entre sí, con bordes compartidos y todo alineado */
   .story__track { display: grid; padding: 0; }
   .story-card {
-    position: relative; display: flex; flex-direction: column; gap: 14px;
-    padding: clamp(16px, 2.2vw, 28px) var(--pad-x) clamp(24px, 3vw, 36px);
+    position: relative; display: flex; flex-direction: column;
+    padding: 0 0 clamp(24px, 3vw, 36px);
     border-bottom: 1px solid var(--line-strong);
   }
-  .story-card__meta { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--line-strong); padding-bottom: 10px; }
+  /* Cabecera de la ficha, la imagen y el texto: la línea y la foto van de borde a borde de la tarjeta */
+  .story-card__meta { display: flex; justify-content: space-between; gap: 10px; padding: 12px var(--pad-x); border-bottom: 1px solid var(--line-strong); }
   .story-card__meta b { font-weight: 500; }
-  .story-card__img { margin: 0; aspect-ratio: 4 / 3; overflow: hidden; background: #ececec; }
-  .story-card__img img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; filter: grayscale(1); transition: transform .9s var(--ease-out); }
-  .story-card__img.is-cat { background: #fff; }
-  .story-card__img.is-cat img { object-fit: contain; object-position: bottom; }
+  .story-card__img { margin: 0; aspect-ratio: 4 / 3; overflow: hidden; background: #ececec; border-bottom: 1px solid var(--line-strong); }
+  /* El hueco de foto pendiente trae su propio marco: aquí solo lleva la línea inferior (sin duplicar bordes) */
+  .story-card__img.void { border: 0; border-bottom: 1px solid var(--line-strong); }
+  .story-card__img img { width: 100%; height: 100%; object-fit: cover; transition: transform .9s var(--ease-out); }
+  /* foto de portada (recorte transparente) sobre el gris de la portada */
+  .story-card__img.is-cutout { background: var(--paper-2); }
+  .story-card__img.is-cutout img { object-position: 50% 30%; }
   .story-card:hover .story-card__img img { transform: scale(1.05); }
-  .story-card__text { margin: 0; color: var(--ink-2); max-width: 38ch; }
+  .story-card :global(.h3) { padding: 16px var(--pad-x) 0; }
+  .story-card__text { margin: 0; padding: 8px var(--pad-x) 0; color: var(--ink-2); max-width: 38ch; }
   .story-card__n { position: absolute; right: var(--pad-x); bottom: 10px; font-size: 11px; color: var(--ink-3); }
   .story__rail { display: none; }
 
@@ -69,8 +74,11 @@ import { story } from '../data/site';
       width: clamp(300px, 30vw, 440px); flex: none; min-height: 0;
       border-bottom: 0; border-right: 1px solid var(--line-strong);
     }
+    /* la última ficha acaba pegada al marco: su borde derecho sería una línea doble */
+    .story-card:last-child { border-right: 0; }
     .story-card__img { aspect-ratio: auto; flex: 1; min-height: 0; }
-    .story-card__text { padding-bottom: 14px; }
+    /* el texto reserva siempre 4 líneas: así la línea bajo la foto queda alineada en todas las fichas */
+    .story-card__text { padding-bottom: 14px; box-sizing: content-box; min-height: calc(1.5em * var(--story-lines, 4)); }
     /* Barra de progreso con borde superior e inferior */
     .story__rail {
       display: flex; align-items: center; gap: 16px; padding: 14px var(--pad-x);
@@ -78,5 +86,9 @@ import { story } from '../data/site';
     }
     .story__bar { flex: 1; height: 1px; background: var(--line-strong); position: relative; }
     .story__bar i { position: absolute; inset: -1px 0; background: var(--red); transform-origin: left; transform: scaleX(0); }
+  }
+  /* fichas más estrechas: el texto ocupa 5 líneas, se reservan 5 para mantener la alineación */
+  @media (min-width: 900px) and (max-width: 1299px) {
+    .story { --story-lines: 5; }
   }
 </style>

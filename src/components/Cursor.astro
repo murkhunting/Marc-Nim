@@ -31,7 +31,11 @@ import Paw from './Paw.astro';
   }
   .cursor__label {
     position: absolute; left: 0; top: 0; transform: translate(-50%, -50%) scale(0);
-    background: var(--red); color: var(--paper); padding: 6px 10px; border-radius: 999px; white-space: nowrap;
+    /* Cristal esmerilado (glassmorphism) */
+    background: rgba(255, 255, 255, .68); -webkit-backdrop-filter: blur(14px) saturate(1.6); backdrop-filter: blur(14px) saturate(1.6);
+    color: var(--ink); padding: 8px 13px; border: 1px solid rgba(23, 25, 29, .2); border-radius: 0;
+    /* misma tipografía que el botón "Desliza para ver el proyecto" */
+    font-family: var(--f-futura); font-weight: 500; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
     transition: transform .35s var(--ease-out);
   }
   .cursor__xy {
