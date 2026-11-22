@@ -6,7 +6,6 @@ const endpoint = import.meta.env.PUBLIC_RSVP_ENDPOINT ?? '';
 ---
 <section id="rsvp" class="rsvp section--flush" data-flush data-section="rsvp">
   <SheetHead
-    n={9}
     label="Solicitud de licencia de asistencia"
     title={'¿Vienes a la boda?'}
     sub="Confírmanos tu asistencia. La fecha límite es el 16 de junio de 2027."
@@ -49,120 +48,60 @@ const endpoint = import.meta.env.PUBLIC_RSVP_ENDPOINT ?? '';
 
     <div class="form-card" data-rsvp data-endpoint={endpoint}>
       <div class="form-card__top mono">
-        <span>Solicitud · Exp. Nº <b data-exp>—</b></span>
-        <span class="form-card__step" data-step-label>Paso 1 / 7</span>
+        <span><span class="form-card__lead">Solicitud · </span>Exp. Nº <b data-exp>—</b></span>
+        <span class="form-card__step" data-step-label>Paso 1 / 5</span>
       </div>
       <div class="form-card__progress" aria-hidden="true" data-progress-bar></div>
 
       <form class="rsvp-form" id="rsvp-form" data-form novalidate>
-        <!-- 1. Datos -->
-        <fieldset class="step is-current" data-step data-say-text="Empecemos por lo básico. ¿Quién eres?">
-          <legend class="step__title">¿Quién firma la solicitud?</legend>
-          <label class="field">
-            <span class="mono field__label">Nombre y apellidos *</span>
-            <input name="nombre" required autocomplete="name" placeholder="Nombre Apellido" />
-          </label>
-          <label class="field">
-            <span class="mono field__label">Email *</span>
-            <input name="email" type="email" required autocomplete="email" inputmode="email" placeholder="tu@email.com" />
-          </label>
-          <label class="field">
-            <span class="mono field__label">Teléfono (opcional)</span>
-            <input name="telefono" type="tel" autocomplete="tel" inputmode="tel" placeholder="+34 / +507 …" />
-          </label>
+        <!-- 1. Quién viene (las personas salen de la invitación personalizada) -->
+        <fieldset class="step is-current" data-step data-say-text="La pregunta importante. Sin presión. (Mucha presión.)">
+          <legend class="step__title">¿Quién viene?</legend>
+          <p class="mono step__hint">Marca quién asistirá el 16 de octubre de 2027</p>
+          <div class="people" data-people></div>
         </fieldset>
 
-        <!-- 2. Asistencia -->
-        <fieldset class="step" data-step data-say-text="La pregunta importante. Sin presión. (Mucha presión.)">
-          <legend class="step__title">¿Asistirás el 16 de octubre de 2027?</legend>
-          <div class="choices choices--big">
-            <label class="choice">
-              <input type="radio" name="asistencia" value="si" required />
-              <span class="choice__box">
-                <span class="choice__big">Sí, ahí estaré</span>
-                <span class="mono">Licencia aprobada</span>
-              </span>
-            </label>
-            <label class="choice">
-              <input type="radio" name="asistencia" value="no" />
-              <span class="choice__box">
-                <span class="choice__big">No podré ir</span>
-                <span class="mono">Os echaré de menos</span>
-              </span>
-            </label>
-          </div>
-        </fieldset>
-
-        <!-- 3. Acompañantes -->
-        <fieldset class="step" data-step data-only="si" data-say-text="¿Vienes solo o acompañado? No juzgo. Bueno, un poco.">
-          <legend class="step__title">¿Vienes acompañado?</legend>
-          <div class="choices">
-            <label class="choice"><input type="radio" name="acompanante" value="no" checked /><span class="choice__box">Vengo solo/a</span></label>
-            <label class="choice"><input type="radio" name="acompanante" value="si" /><span class="choice__box">Con acompañante</span></label>
-          </div>
-          <label class="field" data-show-if="acompanante=si">
-            <span class="mono field__label">Nombre del acompañante</span>
-            <input name="acompanante_nombre" placeholder="Nombre Apellido" />
-          </label>
-          <div class="field">
-            <span class="mono field__label">Niños que vienen contigo</span>
-            <div class="stepper" data-stepper>
-              <button type="button" data-dec aria-label="Menos niños">−</button>
-              <input name="ninos" type="number" min="0" max="6" value="0" inputmode="numeric" aria-label="Número de niños" />
-              <button type="button" data-inc aria-label="Más niños">+</button>
-            </div>
-          </div>
-        </fieldset>
-
-        <!-- 4. Menú -->
+        <!-- 2. Menú y alergias (solo de quienes vienen) -->
         <fieldset class="step" data-step data-only="si" data-say-text="Yo como pienso. Tú dime qué comes.">
           <legend class="step__title">Menú y alergias</legend>
-          <div class="choices choices--wrap">
-            {['Sin preferencias', 'Vegetariano', 'Vegano', 'Sin gluten', 'Otro'].map((m, i) => (
-              <label class="choice choice--chip"><input type="radio" name="menu" value={m} checked={i === 0} /><span class="choice__box">{m}</span></label>
-            ))}
-          </div>
+          <div class="people" data-menus></div>
           <label class="field">
-            <span class="mono field__label">Alergias o intolerancias (tuyas o de tus acompañantes)</span>
-            <textarea name="alergias" rows="3" placeholder="Ej.: alergia a los frutos secos"></textarea>
+            <span class="mono field__label">¿Alguna alergia o intolerancia adicional? (para cualquiera de la lista)</span>
+            <textarea name="alergias" rows="3" placeholder="Ej.: Alberto es alérgico a los frutos secos"></textarea>
           </label>
         </fieldset>
 
-        <!-- 5. Logística -->
+        <!-- 3. Logística -->
         <fieldset class="step" data-step data-only="si" data-say-text="Logística. Lo mío es dormir; lo tuyo, llegar.">
           <legend class="step__title">Logística</legend>
           <div class="field">
-            <span class="mono field__label">¿Desde dónde vienes?</span>
-            <div class="choices choices--wrap">
+            <span class="mono field__label">¿Desde dónde venís?</span>
+            <div class="seg">
               {['Panamá', 'Barcelona', 'Ibiza', 'Otro'].map((m) => (
-                <label class="choice choice--chip"><input type="radio" name="origen" value={m} /><span class="choice__box">{m}</span></label>
+                <label class="seg__opt"><input type="radio" name="origen" value={m} /><span class="seg__box mono">{m}</span></label>
               ))}
             </div>
           </div>
           <div class="field">
-            <span class="mono field__label">¿Te interesa transporte el día de la boda?</span>
-            <div class="choices choices--wrap">
-              {['Sí', 'No', 'Aún no lo sé'].map((m) => (
-                <label class="choice choice--chip"><input type="radio" name="transporte" value={m} /><span class="choice__box">{m}</span></label>
+            <span class="mono field__label">¿Os interesa transporte el día de la boda?</span>
+            <div class="seg">
+              {['Ida y vuelta', 'Solo ida', 'Solo vuelta', 'Aún no lo sé', 'No'].map((m) => (
+                <label class="seg__opt"><input type="radio" name="transporte" value={m} /><span class="seg__box mono">{m}</span></label>
               ))}
             </div>
           </div>
           <label class="field">
-            <span class="mono field__label">¿Cuándo llegas a Ibiza? (aprox.)</span>
+            <span class="mono field__label">¿Cuándo llegáis a Ibiza? (aprox.)</span>
             <input name="llegada" type="date" min="2027-10-01" max="2027-10-16" />
           </label>
         </fieldset>
 
-        <!-- 6. Fiesta / mensaje -->
-        <fieldset class="step" data-step data-say-text="La canción que no puede faltar. Ni se te ocurra poner Cats.">
-          <legend class="step__title" data-title-si="Fiesta y mensaje" data-title-no="Un mensaje para los novios">Fiesta y mensaje</legend>
-          <label class="field" data-only="si">
-            <span class="mono field__label">Una canción que no puede faltar</span>
-            <input name="cancion" placeholder="Artista — Canción" />
-          </label>
+        <!-- 4. Mensaje -->
+        <fieldset class="step" data-step data-say-text="Un mensajito para los novios. Si hablas de mí, que sea bueno.">
+          <legend class="step__title">Un mensaje para los novios</legend>
           <label class="field">
             <span class="mono field__label">Mensaje para Marc y Nimrha</span>
-            <textarea name="mensaje" rows="4" placeholder="Lo que quieras…"></textarea>
+            <textarea name="mensaje" rows="5" placeholder="Lo que quieras…"></textarea>
           </label>
         </fieldset>
 
@@ -220,7 +159,7 @@ const endpoint = import.meta.env.PUBLIC_RSVP_ENDPOINT ?? '';
     --tex: var(--tex-grain), var(--tex-fiber), var(--tex-mottle);
   }
   .rsvp-stage > .form-card, .rsvp-stage > .env { grid-area: 1 / 1; justify-self: center; width: min(860px, 100%); }
-  .rsvp-stage > .form-card { margin: 0; z-index: 2; }
+  .rsvp-stage > .form-card { margin: 0; z-index: 2; min-width: 0; }
   /* Sin JS no hay sobre: el formulario se ve directamente */
   .rsvp-stage:not([data-closed]) .env { display: none; }
 
@@ -256,7 +195,9 @@ const endpoint = import.meta.env.PUBLIC_RSVP_ENDPOINT ?? '';
 
   /* Sello de correos con borde troquelado */
   .env__stamp {
-    position: absolute; top: 7%; right: 4.5%; width: clamp(62px, 8vw, 92px); aspect-ratio: 4 / 5; padding: 5px;
+    /* ancho y alto múltiplos de 8px (el paso de la dentada): así los semicírculos caen justo en los cuatro bordes */
+    --sw: round(nearest, clamp(62px, 8vw, 92px), 8px);
+    position: absolute; top: 7%; right: 4.5%; width: var(--sw); height: round(nearest, calc(var(--sw) * 1.25), 8px); padding: 5px;
     background: radial-gradient(circle at 50% 50%, transparent 2.3px, #f8f8f7 2.6px) -4px -4px / 8px 8px;
     filter: drop-shadow(0 1px 1px rgba(23, 25, 29, .15)); transform: rotate(2deg);
   }
@@ -290,14 +231,14 @@ const endpoint = import.meta.env.PUBLIC_RSVP_ENDPOINT ?? '';
     z-index: 5; left: 50%; top: var(--flap); width: clamp(88px, 11vw, 112px); aspect-ratio: 1; display: grid; place-items: center;
     translate: -50% -50%;
     border-radius: 52% 48% 50% 50% / 50% 53% 47% 50%;
-    background: radial-gradient(circle at 32% 28%, #5f8f73, #3f6a52 55%, #2f5440);
-    box-shadow: 0 6px 12px -3px rgba(23, 25, 29, .5), 0 0 0 3px rgba(47, 84, 64, .35), inset 0 -4px 8px rgba(23, 25, 29, .18), inset 0 3px 5px rgba(255, 255, 255, .28);
+    background: radial-gradient(circle at 32% 28%, #f2f2f4, #e2e2e6 55%, #cfcfd4);
+    box-shadow: 0 6px 12px -3px rgba(23, 25, 29, .45), 0 0 0 3px rgba(235, 235, 237, .4), inset 0 -4px 8px rgba(23, 25, 29, .1), inset 0 3px 5px rgba(255, 255, 255, .6);
   }
-  .env__seal::before { content: ''; position: absolute; inset: 8%; border-radius: inherit; border: 1.5px solid rgba(255, 255, 255, .32); }
+  .env__seal::before { content: ''; position: absolute; inset: 8%; border-radius: inherit; border: 1.5px solid rgba(120, 165, 138, .45); }
   .env__mono {
     position: relative; display: flex; align-items: baseline; gap: .04em;
-    font-family: var(--f-rough); font-size: clamp(38px, 4.6vw, 48px); line-height: 1; color: #f7f5f1;
-    text-shadow: 0 1px 1px rgba(23, 25, 29, .3); padding-top: .1em;
+    font-family: var(--f-rough); font-size: clamp(38px, 4.6vw, 48px); line-height: 1; color: var(--red);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .7); padding-top: .1em;
   }
   .env__mono small { font-size: .8em; margin: 0 .06em; font-weight: 400; }
   .env__hit { position: absolute; inset: 0; z-index: 6; display: block; background: none; border: 0; padding: 0; cursor: pointer; }
@@ -340,36 +281,62 @@ const endpoint = import.meta.env.PUBLIC_RSVP_ENDPOINT ?? '';
   .field__label { color: var(--ink-2); }
   .field input:not([type='radio']), .field textarea {
     width: 100%; min-height: 50px; padding: 10px 2px; font-size: 1.15rem;
-    background: transparent; border: 0; border-bottom: 1.5px solid var(--ink); border-radius: 0;
+    background: transparent; border: 0; border-bottom: 1px solid var(--line-strong); border-radius: 0;
     transition: border-color .3s, background .3s;
   }
-  .field textarea { resize: vertical; min-height: 90px; border: 1.5px solid var(--ink); padding: 10px 12px; }
+  .field textarea { resize: vertical; min-height: 90px; border: 1px solid var(--line-strong); padding: 10px 12px; }
   .field input:focus, .field textarea:focus { outline: none; border-color: var(--red); background: rgba(120,165,138,.06); }
   .field input[aria-invalid='true'] { border-color: var(--red); }
   .field input::placeholder, .field textarea::placeholder { color: var(--ink-3); }
 
-  .choices { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
-  .choices--wrap { display: flex; flex-wrap: wrap; gap: 8px; }
-  .choice { position: relative; display: block; }
-  .choice input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
-  .choice__box {
-    display: grid; gap: 6px; align-content: center; min-height: 54px; padding: 12px 16px; height: 100%;
-    border: 1.5px solid var(--ink); background: #fff;
-    transition: background .3s, color .3s, transform .3s var(--ease-out), box-shadow .3s var(--ease-out);
-  }
-  .choice--chip .choice__box { min-height: 46px; padding: 8px 16px; border-radius: 999px; }
-  .choices--big .choice__box { min-height: 130px; padding: 18px; }
-  .choice__big { font-size: clamp(1.25rem, 3vw, 1.7rem); font-weight: 600; text-transform: uppercase; line-height: 1.05; }
-  .choice input:checked + .choice__box { background: var(--ink); color: var(--paper); box-shadow: 4px 4px 0 var(--red); transform: translate(-2px, -2px); }
-  .choice input:focus-visible + .choice__box { outline: 2px solid var(--red); outline-offset: 3px; }
-  .choice:hover .choice__box { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--ink); }
-  .choice input:checked + .choice__box .mono { color: var(--paper-3); }
+  .step__hint { margin: 0; color: var(--ink-3); line-height: 1.4; }
 
-  .stepper { display: inline-flex; align-items: center; border: 1.5px solid var(--ink); width: max-content; }
-  .stepper button { width: 50px; height: 50px; border: 0; background: #fff; font-size: 1.4rem; }
-  .stepper button:hover { background: var(--ink); color: var(--paper); }
-  .stepper input { width: 60px !important; text-align: center; border: 0 !important; border-inline: 1.5px solid var(--ink) !important; min-height: 50px; -moz-appearance: textfield; }
-  .stepper input::-webkit-outer-spin-button, .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  /* Selectores: tira de botones planos y cuadrados, como los filtros del mapa (el relleno verde sube).
+     Algunos se crean con JS, por eso los selectores van en :global */
+  :global(.seg) { display: flex; flex-wrap: wrap; padding: 0 1px 1px 0; } /* margen negativo en las celdas: los bordes compartidos nunca se duplican */
+  :global(.seg__opt) { position: relative; display: block; flex: 1 1 auto; margin: 0 -1px -1px 0; }
+  :global(.seg__opt input) { position: absolute; inset: 0; z-index: 2; margin: 0; opacity: 0; cursor: pointer; }
+  :global(.seg__box) {
+    position: relative; display: grid; place-items: center; height: 100%; min-height: 46px; padding: 8px 16px; text-align: center;
+    background: #fff; color: var(--ink); border: 1px solid var(--line-strong); border-radius: 0;
+    overflow: hidden; isolation: isolate; transition: color .4s var(--ease);
+  }
+  :global(.seg__box::before) {
+    content: ''; position: absolute; inset: 0; z-index: -1; background: var(--red);
+    transform: translateY(101%); border-radius: 50% 50% 0 0;
+    transition: transform .5s var(--ease), border-radius .5s var(--ease);
+  }
+  :global(.seg__opt:hover .seg__box), :global(.seg__opt input:checked + .seg__box) { color: #fff; }
+  :global(.seg__opt:hover .seg__box::before), :global(.seg__opt input:checked + .seg__box::before) { transform: translateY(0); border-radius: 0; }
+  :global(.seg__opt input:focus-visible + .seg__box) { outline: 2px solid var(--ink); outline-offset: -4px; }
+
+  /* Desplegable (móvil): mismo estilo plano y cuadrado que el resto de la web */
+  :global(.sel) { display: none; position: relative; min-width: 0; }
+  :global(.sel select) {
+    -webkit-appearance: none; appearance: none; width: 100%; min-height: 44px; margin: 0; padding: 0 38px 0 14px;
+    background: #fff; color: var(--ink); border: 1px solid var(--line-strong); border-radius: 0; cursor: pointer;
+    font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; text-overflow: ellipsis;
+    transition: background .3s, border-color .3s;
+  }
+  :global(.sel select:focus) { outline: none; border-color: var(--red); background: rgba(120,165,138,.08); }
+  :global(.sel)::after {
+    content: ''; position: absolute; right: 14px; top: 50%; width: 7px; height: 7px; margin-top: -6px; pointer-events: none;
+    border-right: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); transform: rotate(45deg);
+  }
+
+  /* Lista de personas de la invitación */
+  :global(.people) { display: grid; border-top: 1px solid var(--line-strong); }
+  :global(.person) { display: grid; gap: 10px 20px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line-strong); }
+  :global(.person[hidden]) { display: none; }
+  :global(.person__name) { font-family: var(--f-futura); font-weight: 500; font-size: clamp(1.05rem, 2.2vw, 1.3rem); text-transform: uppercase; line-height: 1.1; overflow-wrap: anywhere; }
+  :global(.person .seg) { flex-wrap: nowrap; }
+  :global(.person .seg__opt) { flex: 1 1 0; }
+  :global(.person .seg__box) { padding: 8px 12px; }
+  @media (min-width: 640px) {
+    :global(.person) { grid-template-columns: minmax(0, 1fr) auto; }
+    :global(.person .seg__opt) { flex: 0 0 auto; }
+    :global(.person--switch .seg__box) { min-width: 76px; }
+  }
 
   .summary { margin: 0; display: grid; }
   .summary :global(div) { display: grid; grid-template-columns: 130px 1fr; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
@@ -414,8 +381,43 @@ const endpoint = import.meta.env.PUBLIC_RSVP_ENDPOINT ?? '';
   .done .note { margin: 0; }
 
   @media (max-width: 480px) {
-    .choices:not(.choices--wrap) { grid-template-columns: 1fr; }
-    .choices--big .choice__box { min-height: 96px; }
     .summary :global(div) { grid-template-columns: 1fr; gap: 2px; }
+  }
+
+  /* ── Móvil: tarjeta compacta, con proporciones más cercanas a un sobre ───────────── */
+  @media (max-width: 639px) {
+    :global(.seg) { display: none; }
+    :global(.sel) { display: block; }
+    /* el área mide lo que la tarjeta, con aire alrededor (sin pantalla completa ni pin) */
+    .rsvp .rsvp__area { min-height: 0; padding: 28px var(--pad-x); align-content: start; }
+    /* la altura la fija el paso más alto, con un tope: en grupos grandes el paso hace scroll por dentro */
+    .form-card { --cp: 14px; --fp: 8px; height: min(var(--card-h, auto), 440px); }
+    .rsvp-form .step.is-current { scrollbar-width: thin; }
+    .form-card__top { min-height: 36px; padding-block: 4px; flex-wrap: nowrap; font-size: 10.5px; }
+    .form-card__lead { display: none; }
+    .form-card__top > span { min-width: 0; }
+    .form-card__progress { margin: 12px 0 14px; }
+    .form-card__progress :global(i) { height: 3px; }
+    .step { gap: 10px; }
+    .step__title { font-size: clamp(1.2rem, 6vw, 1.5rem); margin-bottom: 4px; }
+    .step__hint { font-size: 10px; }
+    .field { gap: 4px; }
+    .field input:not([type='radio']) { min-height: 42px; font-size: 1rem; padding-block: 6px; }
+    .field textarea { min-height: 52px; height: 52px; font-size: 1rem; padding: 8px 10px; }
+    .field__label { font-size: 10px; line-height: 1.3; }
+    :global(.people) { border-top: 1px solid var(--line-strong); }
+    :global(.person) { grid-template-columns: minmax(0, 1fr) 168px; gap: 10px; padding: 6px 0; }
+    :global(.person__name) { font-size: .9rem; line-height: 1.15; }
+    :global(.sel select) { min-height: 40px; font-size: 11px; letter-spacing: .04em; padding: 0 30px 0 10px; }
+    :global(.sel)::after { right: 12px; }
+    :global(.person--switch) { grid-template-columns: minmax(0, 1fr) 92px; }
+    .summary :global(div) { grid-template-columns: 86px 1fr; gap: 8px; padding: 6px 0; font-size: .9rem; }
+    .summary :global(dt) { font-size: 9.5px; padding-top: 2px; }
+    .form-nav .farrow { min-height: 48px; min-width: 52px; }
+    .done__stamp { width: 56px; }
+  }
+  @media (max-width: 359px) {
+    .form-card__top { font-size: 9.5px; gap: 6px; letter-spacing: .02em; }
+    .form-card { --cp: 12px; --fp: 7px; }
   }
 </style>

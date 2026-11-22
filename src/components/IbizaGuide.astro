@@ -5,11 +5,10 @@ const catLabel = Object.fromEntries(spotCats.map((c) => [c.id, c.label]));
 ---
 <section id="ibiza" class="guide section--flush" data-flush data-section="ibiza">
   <SheetHead
-    n={7}
+    n={6}
     label="Entorno · guía de la isla"
     title={'Qué hacer\nen Ibiza'}
     sub="Si venís de lejos, quedaos unos días. Estos son nuestros sitios: una ciudad amurallada, calas que nos encantan y dos atardeceres que no hay que perderse."
-    scale="E 1:200.000"
   />
   <div class="sheet-content">
     <div class="guide__body">
@@ -69,8 +68,11 @@ const catLabel = Object.fromEntries(spotCats.map((c) => [c.id, c.label]));
     transform: translateY(101%); border-radius: 50% 50% 0 0;
     transition: transform .5s var(--ease), border-radius .5s var(--ease);
   }
-  .chip:hover, .chip:focus-visible, .chip.is-on { color: #fff; }
-  .chip:hover::before, .chip:focus-visible::before, .chip.is-on::before { transform: translateY(0); border-radius: 0; }
+  /* Inactivo: gris clarito. Activo: el fondo general de la web. Solo se pone verde al pasar el ratón */
+  .chip { background: var(--paper-2); }
+  .chip.is-on { background: var(--paper); }
+  .chip:not(.is-on):hover, .chip:not(.is-on):focus-visible { color: #fff; }
+  .chip:not(.is-on):hover::before, .chip:not(.is-on):focus-visible::before { transform: translateY(0); border-radius: 0; }
 
   .guide__mapwrap { position: relative; min-height: 0; }
   .guide__map { height: min(60vh, 110vw); min-height: 320px; background: var(--paper); }
@@ -103,6 +105,15 @@ const catLabel = Object.fromEntries(spotCats.map((c) => [c.id, c.label]));
   .spot__text { color: var(--ink-2); font-size: .98rem; }
   .spot__go { position: absolute; right: var(--pad-x); bottom: 14px; text-decoration: none; border-bottom: 1px solid currentColor; }
   .spot__go:hover { color: var(--red); }
+
+  /* Móvil: pestañas + mapa + resultados ocupan una pantalla (100dvh bajo el header).
+     Las pestañas y los resultados miden lo que necesitan y el mapa se adapta al alto que sobra */
+  @media (max-width: 899px) {
+    .guide__body { height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); grid-template-rows: minmax(0, 1fr) auto; }
+    .guide__side { min-height: 0; }
+    .guide__mapwrap { min-height: 0; }
+    .guide__map { height: 100%; min-height: 0; }
+  }
 
   @media (min-width: 900px) {
     .guide__body { grid-template-columns: 1.35fr 1fr; align-items: start; }

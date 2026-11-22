@@ -1,0 +1,14 @@
+{
+  "alberto-isa": {
+    "para": "Alberto e Isa",
+    "personas": ["Alberto García", "Isa López"]
+  },
+  "familia-demo": {
+    "para": "Familia Demo",
+    "personas": ["Marta Demo", "Jordi Demo", "Lucía Demo (niña)", "Pau Demo (niño)"]
+  },
+  "solo-demo": {
+    "para": "Laura",
+    "personas": ["Laura Demo"]
+  }
+}

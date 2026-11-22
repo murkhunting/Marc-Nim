@@ -3,7 +3,7 @@ import { wedding } from '../data/site';
 ---
 <footer class="foot">
   <div class="wrap">
-    <p class="foot__note"><span class="foot__msg">¡Asistencia altamente recomendada!</span>&nbsp;<span class="foot__name">– Marc &amp; Nim</span></p>
+    <p class="foot__note"><span class="foot__name">Marc &amp; Nim</span></p>
 
     <div class="foot__big" aria-hidden="true" data-foot-big><span>16.10.27</span></div>
 
@@ -28,8 +28,7 @@ import { wedding } from '../data/site';
   /* Fecha: rellena, alineada a la izquierda, ocupa todo el ancho y lleva borde superior */
   /* La frase en Jost; "Marc & Nim" mantiene la tipografía del logo */
   .foot__name { white-space: nowrap; }
-  @media (max-width: 520px) { .foot__note { font-size: 24px; } .foot__msg { font-size: .62em; } }
-  .foot__msg { font-family: var(--f-sans); font-weight: 500; font-size: .525em; letter-spacing: .01em; margin-right: .1em; }
+  @media (max-width: 520px) { .foot__note { font-size: 24px; } }
   .foot__big {
     container-type: inline-size; margin: 0; padding: clamp(10px, 2vw, 28px) var(--pad-x) clamp(14px, 2.4vw, 32px);
     border-top: 1px solid var(--frame-line, var(--line-strong)); text-align: left; overflow: hidden;

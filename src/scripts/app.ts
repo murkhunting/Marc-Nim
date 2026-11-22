@@ -9,6 +9,7 @@ import { initSections } from './modules/sections';
 import { initMap } from './modules/map';
 import { initTabs, initFaq } from './modules/ui';
 import { initRsvp } from './modules/rsvp';
+import { initBus } from './modules/bus';
 import { initHeroApprove } from './modules/hero';
 
 getLenis();
@@ -33,6 +34,7 @@ initMap();
 initTabs();
 initFaq();
 initRsvp();
+initBus();
 initHeroApprove();
 
 runLoader().then(() => {

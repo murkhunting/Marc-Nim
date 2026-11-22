@@ -4,12 +4,7 @@ export function initTabs() {
   document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
     const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
     const panels = [...root.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
-    const ink = root.querySelector<HTMLElement>('[data-tabs-ink]')!;
 
-    const moveInk = (t: HTMLElement) => {
-      ink.style.width = `${t.offsetWidth}px`;
-      ink.style.transform = `translateX(${t.offsetLeft}px)`;
-    };
     const select = (t: HTMLButtonElement, focus = false) => {
       tabs.forEach((x) => { const on = x === t; x.setAttribute('aria-selected', String(on)); x.tabIndex = on ? 0 : -1; });
       panels.forEach((p) => {
@@ -17,10 +12,8 @@ export function initTabs() {
         p.hidden = !on;
         if (on && !reduce) {
           gsap.fromTo(p.querySelectorAll('.route__stop, .route__leg'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.6, ease: 'expo.out', overwrite: true });
-          gsap.fromTo(p.querySelectorAll('.tips__row'), { opacity: 0, y: 14 }, { opacity: 1, y: 0, stagger: 0.05, duration: 0.6, ease: 'expo.out', delay: 0.1, overwrite: true });
         }
       });
-      moveInk(t);
       if (focus) t.focus();
       ScrollTrigger.refresh();
     };
@@ -32,9 +25,6 @@ export function initTabs() {
         select(n, true);
       });
     });
-    const init = () => moveInk(tabs.find((t) => t.getAttribute('aria-selected') === 'true') ?? tabs[0]);
-    document.fonts.ready.then(init);
-    window.addEventListener('resize', init);
   });
 }
 

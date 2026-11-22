@@ -19,9 +19,10 @@ import Paw from './Paw.astro';
     width: 0; height: 0;
   }
   .cursor__ring {
-    position: absolute; width: 14px; height: 14px; left: -7px; top: -7px;
-    border: 1.5px solid var(--ink); border-radius: 50%;
-    background: transparent;
+    position: absolute; width: 10px; height: 10px; left: -5px; top: -5px;
+    border: 1.5px solid var(--ink); border-radius: 0;
+    /* Cristal esmerilado (glassmorphism) */
+    background: rgba(255, 255, 255, .28); -webkit-backdrop-filter: blur(2.5px) saturate(1.5); backdrop-filter: blur(2.5px) saturate(1.5);
     box-shadow: 0 0 0 1px rgba(255,255,255,.55);
     transition: width .35s var(--ease-out), height .35s var(--ease-out), left .35s var(--ease-out), top .35s var(--ease-out), background .3s, border-color .3s, opacity .3s;
   }
@@ -43,12 +44,13 @@ import Paw from './Paw.astro';
     transition: opacity .3s;
   }
   /* sobre algo clicable: el punto sigue visible y crece un poco */
-  .cursor.is-hover .cursor__ring { width: 30px; height: 30px; left: -15px; top: -15px; background: rgba(23,25,29,.08); }
+  .cursor.is-hover .cursor__ring { width: 20px; height: 20px; left: -10px; top: -10px; background: rgba(255, 255, 255, .4); }
   .cursor.is-label .cursor__ring { opacity: 0; }
   .cursor.is-label .cursor__label { transform: translate(-50%, -50%) scale(1); }
   .cursor.is-label .cursor__xy, .cursor.is-hover .cursor__xy { opacity: 0; }
   .cursor.is-dark .cursor__ring { border-color: var(--paper); box-shadow: 0 0 0 1px rgba(0,0,0,.5); }
-  .cursor.is-dark.is-hover .cursor__ring { background: rgba(235,235,237,.14); }
+  .cursor.is-dark .cursor__ring { background: rgba(255, 255, 255, .1); }
+  .cursor.is-dark.is-hover .cursor__ring { background: rgba(255, 255, 255, .16); }
   .cursor.is-down .cursor__ring { transform: scale(.8); }
 
   /* Cruz de replanteo a toda pantalla, muy sutil */

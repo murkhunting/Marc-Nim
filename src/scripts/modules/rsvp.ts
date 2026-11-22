@@ -1,26 +1,79 @@
 import { gsap, ScrollTrigger, reduce } from '../motion';
 
-const LABELS: Record<string, string> = {
-  nombre: 'Nombre',
-  email: 'Email',
-  telefono: 'Teléfono',
-  asistencia: 'Asistencia',
-  acompanante: 'Acompañante',
-  acompanante_nombre: 'Nombre acomp.',
-  ninos: 'Niños',
-  menu: 'Menú',
-  alergias: 'Alergias',
-  origen: 'Origen',
-  transporte: 'Transporte',
-  llegada: 'Llegada',
-  cancion: 'Canción',
-  mensaje: 'Mensaje',
-};
+type Guest = { id: string; para: string; personas: string[] };
 
-export function initRsvp() {
+/** Invitación personalizada: ?i=alberto-isa → se busca en /invitados.json (personas del grupo y nombre del sobre).
+ *  Sin id (o si no existe) se usa ?para=Nombre, o una sola persona genérica. */
+async function loadGuest(): Promise<Guest> {
+  const q = new URLSearchParams(window.location.search);
+  const id = (q.get('i') ?? q.get('id') ?? '').trim().toLowerCase();
+  const para = (q.get('para') ?? q.get('invitado') ?? q.get('nombre') ?? q.get('n') ?? '').replace(/\s+/g, ' ').trim().slice(0, 60);
+  if (id) {
+    try {
+      const res = await fetch('/invitados.json', { cache: 'no-cache' });
+      const g = (await res.json())[id];
+      const personas: string[] = Array.isArray(g?.personas) ? g.personas.map((x: unknown) => String(x).trim()).filter(Boolean) : [];
+      if (personas.length) return { id, para: String(g.para ?? '').trim() || personas.join(' y '), personas };
+    } catch { /* sin archivo o inválido: se usa el respaldo */ }
+  }
+  return { id, para, personas: [para || 'Tú'] };
+}
+
+const MENUS = ['Sin preferencias', 'Vegetariano', 'Vegano'];
+
+/** Cada grupo de botones (.seg) lleva también un desplegable (.sel) equivalente: en móvil se ve el desplegable
+ *  (ocupa mucho menos alto) y en escritorio los botones. Los dos se mantienen sincronizados. */
+function enhanceSeg(scope: ParentNode) {
+  scope.querySelectorAll<HTMLElement>('.seg:not([data-enhanced])').forEach((seg) => {
+    seg.setAttribute('data-enhanced', '');
+    const radios = [...seg.querySelectorAll<HTMLInputElement>('input[type=radio]')];
+    if (!radios.length) return;
+    const label = seg.closest('.field')?.querySelector('.field__label')?.textContent?.trim() || seg.closest('.person')?.querySelector('.person__name')?.textContent?.trim() || '';
+    const wrap = document.createElement('span');
+    wrap.className = 'sel';
+    const sel = document.createElement('select');
+    sel.setAttribute('aria-label', label);
+    radios.forEach((rd) => {
+      const o = document.createElement('option');
+      o.value = rd.value;
+      o.textContent = rd.nextElementSibling?.textContent?.trim() || rd.value;
+      sel.appendChild(o);
+    });
+    const hasChecked = () => radios.find((x) => x.checked);
+    // sin ninguna opción marcada se añade un primer valor vacío ("Elige…")
+    if (!hasChecked()) {
+      const o = document.createElement('option');
+      o.value = ''; o.textContent = 'Elige…'; o.disabled = true; o.selected = true;
+      sel.prepend(o);
+    } else sel.value = hasChecked()!.value;
+    wrap.appendChild(sel);
+    seg.after(wrap);
+    sel.addEventListener('change', () => {
+      const t = radios.find((x) => x.value === sel.value);
+      if (t && !t.checked) { t.checked = true; t.dispatchEvent(new Event('change', { bubbles: true })); }
+    });
+    radios.forEach((rd) => rd.addEventListener('change', () => { if (rd.checked) sel.value = rd.value; }));
+  });
+}
+
+export async function initRsvp() {
   const root = document.querySelector<HTMLElement>('[data-rsvp]');
   if (!root) return;
   const form = root.querySelector<HTMLFormElement>('[data-form]')!;
+  const guest = await loadGuest();
+  const personas = guest.personas;
+
+  // Lista de personas de la invitación: quién viene (interruptor Sí/No) y menú de cada una
+  const seg = (name: string, opts: [string, string][], checked: string) =>
+    `<div class="seg" role="radiogroup">${opts.map(([v, l]) => `<label class="seg__opt"><input type="radio" name="${name}" value="${escapeHtml(v)}"${v === checked ? ' checked' : ''} /><span class="seg__box mono">${escapeHtml(l)}</span></label>`).join('')}</div>`;
+  form.querySelector('[data-people]')!.innerHTML = personas
+    .map((n, i) => `<div class="person person--switch"><span class="person__name">${escapeHtml(n)}</span>${seg(`asiste_${i}`, [['no', 'No'], ['si', 'Sí']], 'si')}</div>`)
+    .join('');
+  form.querySelector('[data-menus]')!.innerHTML = personas
+    .map((n, i) => `<div class="person" data-person-row="${i}"><span class="person__name">${escapeHtml(n)}</span>${seg(`menu_${i}`, MENUS.map((m) => [m, m] as [string, string]), MENUS[0])}</div>`)
+    .join('');
+
+  enhanceSeg(form);
   const steps = [...form.querySelectorAll<HTMLElement>('[data-step]')];
   const prev = root.querySelector<HTMLButtonElement>('[data-prev]')!;
   const next = root.querySelector<HTMLButtonElement>('[data-next]')!;
@@ -36,18 +89,12 @@ export function initRsvp() {
   root.querySelectorAll('[data-exp]').forEach((e) => (e.textContent = exp));
 
   let current = 0;
-  const attending = () => (form.elements.namedItem('asistencia') as RadioNodeList).value !== 'no';
+  const comes = (i: number) => (form.elements.namedItem(`asiste_${i}`) as RadioNodeList).value === 'si';
+  const attending = () => personas.some((_, i) => comes(i));
   const flow = () => steps.filter((s) => s.dataset.only !== 'si' || attending());
 
   const updateConditional = () => {
-    const fd = new FormData(form);
-    form.querySelectorAll<HTMLElement>('[data-show-if]').forEach((el) => {
-      const [k, v] = el.dataset.showIf!.split('=');
-      el.hidden = fd.get(k) !== v;
-    });
-    form.querySelectorAll<HTMLElement>('.field[data-only="si"]').forEach((el) => (el.hidden = !attending()));
-    const t = form.querySelector<HTMLElement>('[data-title-si]');
-    if (t) t.textContent = attending() ? t.dataset.titleSi! : t.dataset.titleNo!;
+    form.querySelectorAll<HTMLElement>('[data-person-row]').forEach((el) => (el.hidden = !comes(Number(el.dataset.personRow))));
   };
 
   const renderProgress = () => {
@@ -109,19 +156,27 @@ export function initRsvp() {
     return true;
   };
 
-  const buildSummary = () => {
+  const answers = () => {
     const fd = new FormData(form);
-    const rows: string[] = [];
-    fd.forEach((v, k) => {
-      const val = String(v).trim();
-      if (!val || !LABELS[k]) return;
-      const field = form.querySelector(`[name="${k}"]`);
-      if (field?.closest('[hidden]') || (field?.closest('[data-only="si"]') && !attending())) return;
-      if (k === 'ninos' && val === '0') return;
-      const shown = k === 'asistencia' ? (val === 'si' ? 'Sí, asistiré' : 'No podré asistir') : k === 'acompanante' ? (val === 'si' ? 'Sí' : 'No') : val;
-      rows.push(`<div><dt>${LABELS[k]}</dt><dd>${escapeHtml(shown)}</dd></div>`);
-    });
-    summary.innerHTML = rows.join('');
+    const yes = personas.filter((_, i) => comes(i));
+    const no = personas.filter((_, i) => !comes(i));
+    const menus = personas.map((n, i) => [n, String(fd.get(`menu_${i}`) ?? '')] as const).filter((_, i) => comes(i));
+    return { yes, no, menus, fd };
+  };
+
+  const buildSummary = () => {
+    const { yes, no, menus, fd } = answers();
+    const rows: [string, string][] = [];
+    if (yes.length) rows.push(['Asisten', yes.join(', ')]);
+    if (no.length) rows.push(['No pueden venir', no.join(', ')]);
+    if (yes.length) {
+      rows.push(['Menú', menus.map(([n, m]) => `${n}: ${m}`).join('\n')]);
+      const extra: [string, string][] = [['Alergias', 'alergias'], ['Origen', 'origen'], ['Transporte', 'transporte'], ['Llegada', 'llegada']];
+      extra.forEach(([l, k]) => { const v = String(fd.get(k) ?? '').trim(); if (v) rows.push([l, v]); });
+    }
+    const msg = String(fd.get('mensaje') ?? '').trim();
+    if (msg) rows.push(['Mensaje', msg]);
+    summary.innerHTML = rows.map(([l, v]) => `<div><dt>${l}</dt><dd>${escapeHtml(v).replace(/\n/g, '<br>')}</dd></div>`).join('');
   };
 
   next.addEventListener('click', () => {
@@ -140,10 +195,8 @@ export function initRsvp() {
     updateConditional();
     renderProgress();
     const t = e.target as HTMLInputElement;
-    if (t.name === 'asistencia') {
-      sayText(t.value === 'si' ? '¡Aprobado! Sabía que vendrías.' : 'Vaya. Te echaremos de menos. Ellos más que yo.');
-      // avanzar solo tras elegir asistencia
-      window.setTimeout(() => next.click(), reduce ? 0 : 650);
+    if (t.name.startsWith('asiste_')) {
+      sayText(attending() ? '¡Aprobado! Sabía que vendrías.' : 'Vaya. Os echaremos de menos. Ellos más que yo.');
     }
   });
 
@@ -155,19 +208,21 @@ export function initRsvp() {
     }
   });
 
-  // Contador de niños
-  form.querySelectorAll<HTMLElement>('[data-stepper]').forEach((s) => {
-    const input = s.querySelector('input')!;
-    s.querySelector('[data-dec]')!.addEventListener('click', () => (input.value = String(Math.max(0, Number(input.value) - 1))));
-    s.querySelector('[data-inc]')!.addEventListener('click', () => (input.value = String(Math.min(6, Number(input.value) + 1))));
-  });
-
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     submit.disabled = true;
     submit.classList.add('is-sending');
-    const data: Record<string, string> = { expediente: exp, fecha: new Date().toISOString() };
-    new FormData(form).forEach((v, k) => (data[k] = String(v)));
+    const { yes, no, menus, fd } = answers();
+    const text = (k: string) => String(fd.get(k) ?? '').trim();
+    const data: Record<string, string> = {
+      expediente: exp, fecha: new Date().toISOString(),
+      invitacion: guest.id, para: guest.para,
+      asistencia: yes.length ? 'si' : 'no', asisten: yes.join(', '), no_asisten: no.join(', '),
+      menus: menus.map(([n, m]) => `${n}: ${m}`).join(' | '),
+      alergias: yes.length ? text('alergias') : '', origen: yes.length ? text('origen') : '',
+      transporte: yes.length ? text('transporte') : '', llegada: yes.length ? text('llegada') : '',
+      mensaje: text('mensaje'),
+    };
     try {
       if (endpoint) {
         // text/plain evita el preflight CORS (compatible con Google Apps Script)
@@ -214,7 +269,7 @@ export function initRsvp() {
   const fitHeight = () => {
     root.style.removeProperty('--card-h');
     const cur = steps[current];
-    const hiddenEls = [...form.querySelectorAll<HTMLElement>('[data-show-if], [data-only]')].filter((e) => e.hidden);
+    const hiddenEls = [...form.querySelectorAll<HTMLElement>('[data-person-row], [data-only]')].filter((e) => e.hidden);
     hiddenEls.forEach((e) => (e.hidden = false));
     let max = 0;
     steps.forEach((st) => {
@@ -225,27 +280,32 @@ export function initRsvp() {
     hiddenEls.forEach((e) => (e.hidden = true));
     updateConditional();
     // un poco más alta que el paso más alto: deja respiro entre el contenido y la barra inferior
-    root.style.setProperty('--card-h', `${Math.ceil(max) + 64}px`);
+    const slack = window.matchMedia('(max-width: 639px)').matches ? 18 : 64;
+    root.style.setProperty('--card-h', `${Math.ceil(max) + slack}px`);
   };
   fitHeight();
   document.fonts?.ready.then(() => { fitHeight(); ScrollTrigger.refresh(); });
   let rt = 0;
   window.addEventListener('resize', () => { window.clearTimeout(rt); rt = window.setTimeout(fitHeight, 150); });
 
-  initEnvelope(root, steps, sayText);
+  initEnvelope(root, steps, sayText, guest.para);
 
   // Al llegar, el área del formulario se queda fija un par de scrolls antes de seguir bajando
   const area = document.querySelector<HTMLElement>('[data-rsvp-area]');
   if (area && !reduce) {
     const navH = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 64;
-    ScrollTrigger.create({
-      trigger: area,
-      start: () => `top ${navH()}px`,
-      end: () => `+=${Math.round(window.innerHeight * 0.5)}`,
-      pin: true,
-      pinSpacing: true,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
+    // Solo en pantallas grandes: en móvil el área se adapta a la tarjeta y el scroll no se detiene
+    gsap.matchMedia().add('(min-width: 640px)', () => {
+      ScrollTrigger.create({
+        trigger: area,
+        start: () => `top ${navH()}px`,
+        end: () => `+=${Math.round(window.innerHeight * 0.5)}`,
+        pin: true,
+        pinSpacing: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      });
+      ScrollTrigger.refresh();
     });
   }
 }
@@ -274,16 +334,9 @@ function escapeHtml(s: string) {
   return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 }
 
-/** Nombre del invitado desde la URL: ?para=Marta%20y%20Jordi (también ?invitado=, ?nombre=, ?n=) */
-function guestName(): string {
-  const q = new URLSearchParams(window.location.search);
-  const raw = q.get('para') ?? q.get('invitado') ?? q.get('nombre') ?? q.get('n') ?? '';
-  return raw.replace(/\s+/g, ' ').trim().slice(0, 60);
-}
-
 /** Sobre de la invitación: flota con el nombre del invitado; al abrirlo se da la vuelta, se rompe el lacre
  *  y la tarjeta (el formulario) sale de dentro. */
-function initEnvelope(card: HTMLElement, steps: HTMLElement[], sayText: (t: string) => void) {
+function initEnvelope(card: HTMLElement, steps: HTMLElement[], sayText: (t: string) => void, name: string) {
   const stage = card.closest<HTMLElement>('[data-stage]');
   const hit = stage?.querySelector<HTMLButtonElement>('[data-envelope]');
   if (!stage || !hit) return;
@@ -295,7 +348,6 @@ function initEnvelope(card: HTMLElement, steps: HTMLElement[], sayText: (t: stri
   const area = stage.parentElement!;
 
   // Nombre personalizado
-  const name = guestName();
   const nameEl = env.querySelector<HTMLElement>('[data-guest-name]')!;
   if (name) {
     nameEl.textContent = name;

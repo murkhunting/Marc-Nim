@@ -35,7 +35,7 @@ const figs: Record<string, string> = {
 ---
 <section id="dresscode" class="dress section--flush" data-flush data-section="dresscode">
   <SheetHead
-    n={5}
+    n={4}
     label="Pliego de condiciones · vestuario"
     title={'Dress\ncode'}
     sub="Elegante, pero libre. Dentro de lo formal, poneos lo que os haga sentir increíbles. Nosotros te damos unas recomendaciones:"
@@ -130,6 +130,8 @@ const figs: Record<string, string> = {
     .fig:nth-child(2n) { border-right: 1px solid var(--line-strong); }
     .fig:nth-child(4n) { border-right: 0; }
     .dress__extra { grid-template-columns: 1fr 1fr; }
-    .rules { border-top: 0; border-left: 1px solid var(--line-strong); }
+    /* misma posición que el borde central de las fichas de arriba: borde derecho de la columna izquierda */
+    .rules { border-top: 0; }
+    .weather { border-right: 1px solid var(--line-strong); }
   }
 </style>

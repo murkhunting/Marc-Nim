@@ -134,7 +134,6 @@ export const venues = {
     address: 'Plaça de l\'Església, s/n · 07850 Sant Carles de Peralta',
     maps: 'https://www.google.com/maps/search/?api=1&query=Iglesia+de+Sant+Carles+de+Peralta+Ibiza',
     img: '/img/plano-iglesia.jpg',
-    scale: 'E 1:2.000',
   },
   venue: {
     label: 'Celebración',
@@ -144,7 +143,6 @@ export const venues = {
     address: 'Ctra. de Sant Carles, km 12 · 07850 Sant Carles de Peralta',
     maps: 'https://www.google.com/maps/search/?api=1&query=Can+Curreu+Sant+Carles+de+Peralta+Ibiza',
     img: '/img/plano-can-curreu.jpg',
-    scale: 'E 1:2.500',
   },
 };
 
@@ -181,11 +179,17 @@ export const spots: Spot[] = [
   { id: 'curreu', cat: 'boda', name: 'Can Curreu', text: 'Aperitivo, cena y fiesta.', lat: 39.0317, lng: 1.5561 },
   { id: 'daltvila', cat: 'cultura', name: 'Dalt Vila', text: 'Murallas renacentistas, catedral y castillo. Subid al atardecer y bajad cenando.', lat: 38.9067, lng: 1.4363 },
   { id: 'puerto', cat: 'cultura', name: 'Puerto de Ibiza', text: 'Paseo, terrazas y barcos. A los pies de Dalt Vila.', lat: 38.9114, lng: 1.4390 },
+  { id: 'alamera', cat: 'cultura', name: 'Paseo de Santa Eulalia', text: 'El paseo marítimo del pueblo, con terrazas y mucho ambiente. Ideal para pasear antes o después de la boda.', lat: 38.9841, lng: 1.5341 },
+  { id: 'torreportes', cat: 'cultura', name: 'Torre de Ses Salines', text: 'La Torre de ses Portes, vigía del siglo XVIII sobre las salinas. Vistas y puesta de sol de postal.', lat: 38.8322, lng: 1.4058 },
   { id: 'conta', cat: 'calas', name: 'Cala Conta', text: 'Agua turquesa y rocas. Una de las nuestras.', lat: 38.9575, lng: 1.2195 },
   { id: 'xarraca', cat: 'calas', name: 'Cala Xarraqueta', text: 'Pequeña y tranquila, en el norte. Cerquita de la boda.', lat: 39.1041, lng: 1.5052 },
   { id: 'salines', cat: 'calas', name: 'Ses Salines', text: 'Arena blanca, parque natural y ambiente.', lat: 38.8383, lng: 1.3985 },
   { id: 'hort', cat: 'calas', name: 'Cala d\'Hort', text: 'Con Es Vedrà delante. Imposible no hacer foto.', lat: 38.8895, lng: 1.2240 },
+  { id: 'salada', cat: 'calas', name: 'Cala Salada', text: 'Aguas cristalinas y pinos hasta la orilla, cerca de Sant Antoni. Una joya de poniente.', lat: 39.0095, lng: 1.2991 },
+  { id: 'nova', cat: 'calas', name: 'Cala Nova', text: 'Arena fina y poca profundidad, en Es Canar. Ideal para ir sin prisa.', lat: 39.0087, lng: 1.5818 },
+  { id: 'blanques', cat: 'calas', name: 'Aigües Blanques', text: 'La playa de arcillas blancas, en el este. Cerca de la boda y con mucho ambiente.', lat: 39.0599, lng: 1.5892 },
   { id: 'santantoni', cat: 'sunset', name: 'Sant Antoni', text: 'La puesta de sol clásica, en la costa de poniente.', lat: 38.9815, lng: 1.2955 },
+  { id: 'galera', cat: 'sunset', name: 'Sa Punta Galera', text: 'Un cabo en la costa de poniente, cerca de Sant Antoni. Atardecer con el sol cayendo sobre el mar.', lat: 39.0044, lng: 1.2893 },
   { id: 'vedra', cat: 'sunset', name: 'Mirador de Es Vedrà', text: 'Desde la Torre des Savinar. Llevad agua y calzado cómodo.', lat: 38.8815, lng: 1.2225 },
   { id: 'rest', cat: 'comer', name: 'Restaurantes', text: 'Estamos haciendo trabajo de campo (comiendo). Pronto, nuestra lista.', lat: 38.98, lng: 1.43, soon: true },
 ];
@@ -196,7 +200,7 @@ export const spotCats = [
   { id: 'cultura', label: 'Cultura' },
   { id: 'calas', label: 'Calas' },
   { id: 'sunset', label: 'Atardeceres' },
-  { id: 'comer', label: 'Comer' },
+  { id: 'comer', label: 'Restaurantes' },
 ];
 
 export const faqs = [

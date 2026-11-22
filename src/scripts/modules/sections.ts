@@ -32,7 +32,7 @@ const navH = () => parseFloat(getComputedStyle(document.documentElement).getProp
 
 function story() {
   const mm = gsap.matchMedia();
-  mm.add('(min-width: 900px)', () => {
+  mm.add('(min-width: 1px)', () => {
     const pin = document.querySelector<HTMLElement>('[data-story-pin]');
     const track = document.querySelector<HTMLElement>('[data-story-track]');
     const bar = document.querySelector<HTMLElement>('[data-story-progress]');
@@ -50,11 +50,6 @@ function story() {
         invalidateOnRefresh: true,
         onUpdate: (self) => bar && (bar.style.transform = `scaleX(${self.progress})`),
       },
-    });
-  });
-  mm.add('(max-width: 899px)', () => {
-    gsap.utils.toArray<HTMLElement>('[data-story-card]').forEach((card) => {
-      gsap.from(card, { opacity: 0, y: 40, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: card, start: 'top 88%', once: true } });
     });
   });
 }

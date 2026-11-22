@@ -4,7 +4,7 @@ import { story } from '../data/site';
 ---
 <section id="historia" class="story section--flush" data-section="historia" data-flush>
   <SheetHead
-    n={2}
+    n={1}
     label="Memoria descriptiva"
     title="Nuestra historia"
     sub="Memoria redactada por el promotor. Once fases, de la toma de datos a la inauguración, con traslado transatlántico incluido."
@@ -15,8 +15,7 @@ import { story } from '../data/site';
       {story.map((s, i) => (
         <article class="story-card" data-story-card data-cuqui-hover={s.hover}>
           <div class="story-card__meta mono">
-            <span><b class="red">{s.phase}</b> · {s.tag}</span>
-            <span>{s.year}</span>
+            <span><b>{s.phase}</b> - {s.tag}</span>
           </div>
           {s.img ? (
             <figure class:list={['story-card__img', { 'is-cutout': s.cutout }]}>
@@ -53,7 +52,7 @@ import { story } from '../data/site';
   }
   /* Cabecera de la ficha, la imagen y el texto: la línea y la foto van de borde a borde de la tarjeta */
   .story-card__meta { display: flex; justify-content: space-between; gap: 10px; padding: 12px var(--pad-x); border-bottom: 1px solid var(--line-strong); }
-  .story-card__meta b { font-weight: 500; }
+  .story-card__meta b { font-weight: 500; color: var(--ink); }
   .story-card__img { margin: 0; aspect-ratio: 4 / 3; overflow: hidden; background: #ececec; border-bottom: 1px solid var(--line-strong); }
   /* El hueco de foto pendiente trae su propio marco: aquí solo lleva la línea inferior (sin duplicar bordes) */
   .story-card__img.void { border: 0; border-bottom: 1px solid var(--line-strong); }
@@ -65,27 +64,35 @@ import { story } from '../data/site';
   .story-card :global(.h3) { padding: 16px var(--pad-x) 0; }
   .story-card__text { margin: 0; padding: 8px var(--pad-x) 0; color: var(--ink-2); max-width: 38ch; }
   .story-card__n { position: absolute; right: var(--pad-x); bottom: 10px; font-size: 11px; color: var(--ink-3); }
-  .story__rail { display: none; }
+
+  /* Carrusel lateral fijado a pantalla (también en móvil): la pantalla de debajo del header es exactamente 100dvh */
+  .story__pin { height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); display: flex; flex-direction: column; overflow: hidden; }
+  .story__track { flex: 1; min-height: 0; display: flex; width: max-content; align-items: stretch; }
+  .story-card {
+    /* móvil: cada viñeta ocupa todo el ancho de una vista (entre las líneas del marco) */
+    width: calc(100vw - var(--gutter) * 2); flex: none; min-height: 0;
+    border-bottom: 0; border-right: 1px solid var(--line-strong);
+  }
+  /* la última ficha acaba pegada al marco: su borde derecho sería una línea doble */
+  .story-card:last-child { border-right: 0; }
+  .story-card__img { aspect-ratio: auto; flex: 1; min-height: 0; }
+  /* el texto reserva siempre las mismas líneas: así la línea bajo la foto queda alineada en todas las fichas */
+  .story { --story-lines: 5; }
+  .story-card__text { padding-bottom: 14px; box-sizing: content-box; min-height: calc(1.5em * var(--story-lines, 4)); }
+  .story-card__n { display: none; }
+  /* Barra de progreso con borde superior e inferior */
+  .story__rail {
+    display: flex; align-items: center; gap: 16px; padding: 14px var(--pad-x);
+    border-block: 1px solid var(--line-strong); color: var(--ink-3);
+  }
+  .story__bar { flex: 1; height: 1px; background: var(--line-strong); position: relative; }
+  .story__bar i { position: absolute; inset: -1px 0; background: var(--red); transform-origin: left; transform: scaleX(0); }
+  @media (max-width: 359px) { .story { --story-lines: 6; } }
 
   @media (min-width: 900px) {
-    .story__pin { height: calc(100vh - var(--nav-h)); display: flex; flex-direction: column; overflow: hidden; }
-    .story__track { flex: 1; min-height: 0; display: flex; width: max-content; align-items: stretch; }
-    .story-card {
-      width: clamp(300px, 30vw, 440px); flex: none; min-height: 0;
-      border-bottom: 0; border-right: 1px solid var(--line-strong);
-    }
-    /* la última ficha acaba pegada al marco: su borde derecho sería una línea doble */
-    .story-card:last-child { border-right: 0; }
-    .story-card__img { aspect-ratio: auto; flex: 1; min-height: 0; }
-    /* el texto reserva siempre 4 líneas: así la línea bajo la foto queda alineada en todas las fichas */
-    .story-card__text { padding-bottom: 14px; box-sizing: content-box; min-height: calc(1.5em * var(--story-lines, 4)); }
-    /* Barra de progreso con borde superior e inferior */
-    .story__rail {
-      display: flex; align-items: center; gap: 16px; padding: 14px var(--pad-x);
-      border-block: 1px solid var(--line-strong); color: var(--ink-3);
-    }
-    .story__bar { flex: 1; height: 1px; background: var(--line-strong); position: relative; }
-    .story__bar i { position: absolute; inset: -1px 0; background: var(--red); transform-origin: left; transform: scaleX(0); }
+    .story-card { width: clamp(300px, 30vw, 440px); }
+    .story { --story-lines: 4; }
+    .story-card__n { display: block; }
   }
   /* fichas más estrechas: el texto ocupa 5 líneas, se reservan 5 para mantener la alineación */
   @media (min-width: 900px) and (max-width: 1299px) {

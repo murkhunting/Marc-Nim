@@ -1,6 +1,8 @@
 ---
 import { nav, wedding } from '../data/site';
 const pad = (n: number) => String(n).padStart(2, '0');
+// Láminas 01–07 = de Historia a Preguntas. «Inicio» y «¿Vienes?» (resolución) no llevan número.
+const lamina = (id: string) => { const i = nav.filter((x) => x.id !== 'inicio' && x.id !== 'rsvp').findIndex((x) => x.id === id); return i < 0 ? null : pad(i + 1); };
 ---
 <header class="nav" data-nav>
   <div class="nav__bar">
@@ -14,6 +16,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
       {nav.filter((item) => item.id !== 'inicio').map((item) => (
         <a href={`#${item.id}`} data-scroll={item.id} data-nav-link={item.id} class="nav__link">
           <span class="nav__roll" data-text={item.label}><span>{item.label}</span></span>
+          {lamina(item.id) && <span class="nav__n mono" aria-hidden="true">L{lamina(item.id)}</span>}
         </a>
       ))}
     </nav>
@@ -30,16 +33,12 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 <div class="menu" id="menu" data-menu aria-hidden="true">
   <div class="menu__inner">
-    <div class="menu__head mono">
-      <span>Índice de láminas</span>
-      <span>{wedding.number}</span>
-    </div>
     <ol class="menu__list">
-      {nav.map((item, i) => (
+      {nav.map((item) => (
         <li>
           <a href={`#${item.id}`} data-scroll={item.id} class="menu__link" tabindex="-1">
-            <span class="mono menu__num">L-{pad(i + 1)}</span>
             <span class="menu__label">{item.label}</span>
+            {lamina(item.id) && <span class="mono menu__num">L{lamina(item.id)}</span>}
           </a>
         </li>
       ))}
@@ -58,14 +57,23 @@ const pad = (n: number) => String(n).padStart(2, '0');
   }
   .nav__bar {
     height: var(--nav-h);
-    display: flex; align-items: center; justify-content: space-between; gap: 0;
-    padding: 0 var(--gutter) 0 0;
+    display: flex; align-items: stretch; justify-content: space-between; gap: 0;
+    padding: 0;
     padding-top: env(safe-area-inset-top);
     background: var(--paper);
     border-bottom: 1px solid var(--line-strong);
   }
   .nav__logo { display: flex; align-items: center; text-decoration: none; flex: none; }
-  .nav__logo { perspective: 700px; flex: 1 1 auto; min-width: 0; }
+  .nav__logo { perspective: 700px; flex: 1 1 auto; min-width: 0; position: relative; overflow: hidden; isolation: isolate; align-self: stretch; }
+  /* Hover: el fondo se rellena de verde (sube desde abajo) y el logo pasa a blanco, como en los botones */
+  .nav__logo::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; background: var(--red);
+    transform: translateY(101%); border-radius: 50% 50% 0 0;
+    transition: transform .5s var(--ease), border-radius .5s var(--ease);
+  }
+  .nav__logo:hover::before, .nav__logo:focus-visible::before { transform: translateY(0); border-radius: 0; }
+  .sign__face--front { transition: color .4s var(--ease); }
+  .nav__logo:hover .sign__face--front, .nav__logo:focus-visible .sign__face--front { color: #fff; }
   .sign {
     position: relative; display: block;
     width: 100%; height: var(--nav-h);
@@ -98,6 +106,12 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .nav__link:hover::before, .nav__link.is-active::before { transform: translateY(0); border-radius: 0; }
   /* ¿Vienes?: fondo oscuro en reposo; al pasar el ratón se rellena como los demás */
   .nav__link[data-nav-link='rsvp'] { background: var(--ink); color: #fff; }
+  /* número de lámina: pequeño, en la esquina inferior derecha del botón */
+  .nav__n {
+    position: absolute; right: 8px; bottom: 6px; font-size: 9px; line-height: 1; letter-spacing: .06em;
+    color: var(--ink-3); transition: color .4s var(--ease);
+  }
+  .nav__link:hover .nav__n, .nav__link.is-active .nav__n { color: #fff; }
   /* texto que gira y pasa a blanco */
   .nav__roll { position: relative; display: inline-block; overflow: hidden; line-height: 1.5; }
   .nav__roll > span { display: inline-block; transition: transform .45s var(--ease); }
@@ -108,13 +122,29 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .nav__link:hover .nav__roll > span, .nav__link:hover .nav__roll::after { transform: translateY(-100%); }
   .nav__link.is-active .nav__roll > span, .nav__link.is-active .nav__roll::after { transform: translateY(-100%); }
 
-  .nav__right { display: flex; align-items: center; gap: 10px; }
-  .nav__cta { min-height: 40px; padding: 0 16px; font-size: 11px; }
+  /* Derecha (móvil/tablet): celdas pegadas al borde, separadas por una línea, igual que los apartados del header de escritorio */
+  .nav__right { display: flex; align-items: stretch; gap: 0; }
+  .nav__cta {
+    min-height: 0; padding: 0 20px; border-radius: 0; border-width: 0 0 0 1px; border-color: var(--line-strong);
+    font-family: var(--f-futura); font-weight: 500; font-size: 12.5px; letter-spacing: .08em;
+  }
+  .nav__cta:hover { border-color: var(--line-strong); }
   .nav__burger {
-    display: inline-flex; align-items: center; gap: 10px;
-    min-height: 40px; padding: 0 14px;
-    border: 1px solid var(--line-strong); border-radius: 999px; background: transparent;
-    font-family: var(--f-futura); font-weight: 500; font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    min-width: 116px; min-height: 0; padding: 0 18px;
+    border: 0; border-left: 1px solid var(--line-strong); border-radius: 0; background: transparent; color: var(--ink);
+    font-family: var(--f-futura); font-weight: 500; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase;
+    overflow: hidden; isolation: isolate; transition: color .4s var(--ease);
+  }
+  .nav__burger::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; background: var(--red);
+    transform: translateY(101%); border-radius: 50% 50% 0 0;
+    transition: transform .5s var(--ease), border-radius .5s var(--ease);
+  }
+  /* el relleno verde solo con ratón: en táctil el hover se quedaría "pegado" tras tocar */
+  @media (hover: hover) {
+    .nav__burger:hover, .nav__burger:focus-visible { color: #fff; }
+    .nav__burger:hover::before, .nav__burger:focus-visible::before { transform: translateY(0); border-radius: 0; }
   }
   .nav__burger-icon { display: grid; gap: 4px; width: 16px; }
   .nav__burger-icon i { display: block; height: 1.5px; background: currentColor; transition: transform .4s var(--ease); }
@@ -137,39 +167,37 @@ const pad = (n: number) => String(n).padStart(2, '0');
     }
   }
 
-  /* Menú overlay */
+  /* Menú desplegable: sale por debajo del header, con el color de fondo de la web */
   .menu {
-    position: fixed; inset: 0; z-index: 890;
-    background: var(--ink); color: var(--paper);
+    position: fixed; left: 0; right: 0; top: var(--nav-h); bottom: 0; z-index: 890;
+    background: var(--paper); color: var(--ink);
     clip-path: inset(0 0 100% 0);
     visibility: hidden;
-    overflow-y: auto;
+    overflow: hidden;
   }
   .menu.is-open { visibility: visible; }
+  /* Margen lateral con las líneas del marco de la página; el primer enlace arranca justo bajo el borde del header */
   .menu__inner {
-    min-height: 100%;
-    padding: calc(var(--nav-h) + 24px) var(--gutter) 32px;
-    display: flex; flex-direction: column; gap: 24px;
+    height: 100%; overflow: hidden; margin: 0 var(--gutter); border-inline: 1px solid var(--frame-line, var(--line-strong));
+    display: flex; flex-direction: column;
   }
-  .menu__head { display: flex; justify-content: space-between; color: var(--ink-3); border-bottom: 1px solid rgba(235,235,237,.2); padding-bottom: 10px; }
-  .menu__list { list-style: none; margin: 0; padding: 0; }
-  .menu__list li { border-bottom: 1px solid rgba(235,235,237,.12); overflow: hidden; }
+  /* Cabe siempre en la pantalla: los enlaces se reparten el alto disponible (sin scroll interno) */
+  .menu__list { list-style: none; margin: 0; padding: 0; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  .menu__list li { flex: 1 1 0; min-height: 0; border-bottom: 1px solid var(--line-strong); overflow: hidden; }
   .menu__link {
-    display: flex; align-items: baseline; gap: 16px;
-    padding: 10px 0; text-decoration: none;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    height: 100%; padding: 0 var(--pad-x); text-decoration: none; color: var(--ink);
   }
-  .menu__num { font-family: var(--f-futura); display: inline-block; color: var(--red); min-width: 40px; }
   .menu__label {
     display: inline-block; font-family: var(--f-futura);
-    font-size: clamp(2rem, 9vw, 3.4rem); line-height: 1.05; text-transform: uppercase; font-weight: 500;
+    font-size: clamp(1.5rem, 7vw, 2.2rem); line-height: 1.05; text-transform: uppercase; font-weight: 500;
     transition: color .3s;
   }
+  .menu__num { color: var(--ink); font-size: 11.5px; }
   .menu__link:hover .menu__label, .menu__link:focus-visible .menu__label { color: var(--red); }
-  .menu__foot { margin-top: auto; display: flex; align-items: flex-end; gap: 14px; }
+  .menu__foot { flex: none; display: flex; align-items: flex-end; gap: 14px; padding: 20px var(--pad-x) 0; }
+  /* pantallas bajas: se quita el gato para que los enlaces respiren */
+  @media (max-height: 760px) { .menu__foot { display: none; } }
   .menu__cuqui { width: 84px; height: auto; border-radius: 42px 42px 0 0; filter: grayscale(1); }
-  .menu .note { color: var(--paper); font-size: 1.5rem; margin: 0; }
-  .nav.menu-open .nav__bar { background: transparent; border-color: transparent; color: var(--paper); -webkit-backdrop-filter: none; backdrop-filter: none; }
-  .nav.menu-open .sign__face--front { color: var(--paper); }
-  .nav.menu-open .nav__burger { border-color: rgba(235,235,237,.5); }
-  .nav.menu-open .nav__cta { --bg: var(--paper); --fg: var(--ink); }
+  .menu .note { color: var(--ink); font-size: 1.5rem; margin: 0; }
 </style>

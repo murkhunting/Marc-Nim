@@ -1,6 +1,7 @@
 ---
 import SheetHead from './SheetHead.astro';
 
+// Solo cambia la ruta entre pestañas; los consejos son fijos.
 const tabs = [
   {
     id: 'pty',
@@ -10,39 +11,23 @@ const tabs = [
       { code: 'MAD', city: 'Madrid', leg: '~10 h · directo' },
       { code: 'IBZ', city: 'Ibiza', leg: '~1 h 15' },
     ],
-    tips: [
-      ['Vuelos', 'Hay vuelos directos Panamá–Madrid (Iberia y Air Europa) y desde Madrid salen varios al día a Ibiza (Iberia, Air Europa, Vueling, Ryanair). También hay opciones con escala en otras ciudades europeas.'],
-      ['Diferencia horaria', 'En octubre, Ibiza va 7 horas por delante de Panamá. Llegad un par de días antes y el jet lag se queda en el avión.'],
-      ['Documentación', 'Pasaporte en vigor. Para estancias cortas no hace falta visado, pero comprobad antes de viajar si ya se exige la autorización ETIAS.'],
-      ['Enchufes y dinero', 'En España los enchufes son tipo C/F a 230 V: traed adaptador. Se paga en euros y con tarjeta en casi todas partes.'],
-    ],
   },
   {
-    id: 'bcn',
-    label: 'Desde Barcelona',
+    id: 'otro',
+    label: 'Desde otro origen',
     route: [
-      { code: 'BCN', city: 'Barcelona' },
-      { code: 'IBZ', city: 'Ibiza', leg: '~1 h · directo' },
-    ],
-    tips: [
-      ['Avión', 'Vuelos directos varias veces al día (Vueling, Ryanair y otras). Si reserváis con tiempo, salen bien de precio.'],
-      ['Ferry', 'También hay barco nocturno Barcelona–Ibiza (Baleària, Trasmed), de unas 8–9 h. Puede ir con coche.'],
-      ['Documentación', 'Con el DNI es suficiente.'],
+      { code: 'TÚ', city: 'Tu ciudad' },
+      { code: 'MAD', city: 'Madrid o Barcelona', leg: 'Vuelo a España' },
+      { code: 'IBZ', city: 'Ibiza', leg: '~1 h' },
     ],
   },
-  {
-    id: 'isla',
-    label: 'Por la isla',
-    route: [
-      { code: 'IBZ', city: 'Aeropuerto' },
-      { code: 'STC', city: 'Sant Carles', leg: '~30 min en coche' },
-    ],
-    tips: [
-      ['Coche', 'Muy recomendable alquilar coche: Sant Carles está en el noreste y el autobús no llega a todas partes.'],
-      ['Taxi', 'De noche hay pocos. Si los necesitáis, reservad con antelación.'],
-      ['El día de la boda', '[PENDIENTE] Estamos organizando el transporte entre la iglesia, Can Curreu y la vuelta a casa.'],
-    ],
-  },
+];
+
+const tips = [
+  ['Vuelos internacionales', 'Lo mejor es volar primero a Madrid o Barcelona y, desde allí, buscar una compañía low cost hasta Ibiza. Los vuelos directos al aeropuerto de Ibiza suelen costar bastante más.'],
+  ['Vuelos dentro de España', 'Las compañías más económicas suelen ser Ryanair o Vueling. Si miráis con tiempo, el precio puede salir muy bien.'],
+  ['Documentación', 'Pasaporte en vigor, o DNI si venís de la UE. Para estancias cortas no hace falta visado, pero comprobad antes de viajar si ya se exige la autorización ETIAS.'],
+  ['Moverse por la isla', 'Muy recomendable alquilar coche: Sant Carles está en el noreste, a unos 30 min del aeropuerto, y el autobús no llega a todas partes. De noche hay pocos taxis: reservad con antelación.'],
 ];
 
 const zones = [
@@ -54,7 +39,7 @@ const zones = [
 ---
 <section id="viaje" class="travel section--flush" data-flush data-section="viaje">
   <SheetHead
-    n={6}
+    n={5}
     label="Accesos y logística"
     title={'Viaje y\nalojamiento'}
     sub="Vendrá gente de Panamá, de Barcelona y de donde haga falta. Aquí tenéis cómo llegar y dónde dormir cerca de la boda."
@@ -68,7 +53,6 @@ const zones = [
             {t.label}
           </button>
         ))}
-        <span class="tabs__ink" data-tabs-ink aria-hidden="true"></span>
       </div>
 
       {tabs.map((t, i) => (
@@ -89,21 +73,23 @@ const zones = [
               </>
             ))}
           </div>
-          <dl class="tips">
-            {t.tips.map(([k, v]) => (
-              <div class="tips__row">
-                <dt class="mono">{k}</dt>
-                <dd>{v}</dd>
-              </div>
-            ))}
-          </dl>
         </div>
+      ))}
+    </div>
+
+    <!-- Consejos fijos: tarjetas al 50 % en dos filas, no cambian con la pestaña -->
+    <div class="tips">
+      {tips.map(([k, v], i) => (
+        <article class="tip">
+          <p class="mono tip__k">{String(i + 1).padStart(2, '0')} - {k}</p>
+          <p class="tip__v">{v}</p>
+        </article>
       ))}
     </div>
 
     <div class="stay">
       <div class="stay__head">
-        <h3 class="h3">Dónde dormir</h3>
+        <h3 class="h3">Alojamiento en Ibiza</h3>
         <p class="mono stay__meta">Distancias en coche hasta Sant Carles</p>
       </div>
       <div class="stay__grid">
@@ -125,17 +111,32 @@ const zones = [
 </section>
 
 <style>
-  .tabs__list { position: relative; display: flex; gap: 0; border-bottom: 1px solid var(--line-strong); overflow-x: auto; scrollbar-width: none; }
-  .tabs__list::-webkit-scrollbar { display: none; }
-  .tabs__tab {
-    flex: 1 0 auto; min-height: 52px; padding: 0 18px; background: none; border: 0; color: var(--ink-3);
-    transition: color .3s;
-  }
-  .tabs__tab[aria-selected='true'] { color: var(--ink); }
-  .tabs__ink { position: absolute; left: 0; bottom: -1px; height: 3px; background: var(--red); width: 0; transition: transform .5s var(--ease), width .5s var(--ease); }
-  .tabs__panel { padding-top: clamp(28px, 4vw, 48px); }
+  /* La lámina va a sangre: las pestañas quedan pegadas al borde superior */
+  :global(.travel .sheet-content) { padding: 0; }
 
-  .route { display: flex; align-items: center; gap: 12px; margin-bottom: clamp(28px, 4vw, 48px); }
+  /* Pestañas: mismo estilo que los filtros del mapa de Ibiza (tira pegada, relleno que sube) */
+  .tabs__list { display: flex; border-bottom: 1px solid var(--frame-line, var(--line-strong)); background: var(--paper); }
+  .tabs__tab {
+    position: relative; flex: 1 1 0; min-height: 56px; padding: 0 20px;
+    background: none; border: 0; border-right: 1px solid var(--frame-line, var(--line-strong)); border-radius: 0;
+    color: var(--ink); overflow: hidden; isolation: isolate; white-space: nowrap;
+    transition: color .4s var(--ease);
+  }
+  .tabs__tab:last-child { border-right: 0; }
+  .tabs__tab::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; background: var(--red);
+    transform: translateY(101%); border-radius: 50% 50% 0 0;
+    transition: transform .5s var(--ease), border-radius .5s var(--ease);
+  }
+  /* Inactiva: fondo un poco más oscuro. Activa: el fondo claro de la página (sin verde) */
+  .tabs__tab { background: var(--paper-2); }
+  .tabs__tab[aria-selected='true'] { background: var(--paper); }
+  .tabs__tab[aria-selected='true']::before { display: none; }
+  .tabs__tab[aria-selected='false']:hover, .tabs__tab[aria-selected='false']:focus-visible { color: #fff; }
+  .tabs__tab[aria-selected='false']:hover::before, .tabs__tab[aria-selected='false']:focus-visible::before { transform: translateY(0); border-radius: 0; }
+  .tabs__panel { padding: clamp(28px, 4vw, 48px) var(--pad-x); border-bottom: 1px solid var(--frame-line, var(--line-strong)); }
+
+  .route { display: flex; align-items: center; gap: 12px; }
   .route__stop { display: grid; flex: none; }
   .route__code { font-size: clamp(2.4rem, 9vw, 6rem); line-height: .9; font-weight: 500; letter-spacing: -0.02em; }
   .route__city { color: var(--ink-3); }
@@ -146,26 +147,27 @@ const zones = [
   @keyframes fly { from { left: 0; } to { left: calc(100% - 18px); } }
   .route__time { color: var(--ink-2); font-size: 10.5px; text-align: center; }
 
-  .tips { margin: 0; display: grid; }
-  .tips__row { display: grid; gap: 4px; padding: 16px 0; border-top: 1px solid var(--line); }
-  .tips dt { color: var(--red); }
-  .tips dd { margin: 0; color: var(--ink-2); max-width: 64ch; }
+  .tips { display: grid; }
+  .tip { padding: clamp(20px, 3vw, 32px) var(--pad-x); border-bottom: 1px solid var(--frame-line, var(--line-strong)); display: grid; gap: 10px; align-content: start; }
+  .tip p { margin: 0; }
+  .tip__k { color: var(--ink); }
+  .tip__v { color: var(--ink-2); max-width: 52ch; }
 
-  .stay { margin-top: clamp(56px, 8vw, 110px); }
+  .stay { padding: clamp(40px, 6vw, 80px) var(--pad-x); }
   .stay__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
   .stay__head .h3 { font-size: clamp(1.8rem, 4vw, 3rem); text-transform: uppercase; font-weight: 500; }
   .stay__meta { color: var(--ink-3); margin: 0; }
   .stay__grid { display: grid; gap: 12px; }
-  .zone { border: 1px solid var(--line-strong); padding: 16px; display: grid; gap: 8px; background: color-mix(in srgb, var(--paper) 70%, white); }
+  .zone { border: 1px solid var(--line-strong); padding: 16px; display: grid; gap: 8px; align-content: start; background: color-mix(in srgb, var(--paper) 70%, white); }
   .zone__top { display: flex; justify-content: space-between; }
   .zone__name { margin: 0; font-size: 1.3rem; font-weight: 600; text-transform: uppercase; line-height: 1.1; }
   .zone__text { margin: 0; color: var(--ink-2); }
   .zone--soon { border-style: dashed; background: transparent; }
 
   @media (min-width: 760px) {
-    .tabs__tab { flex: 0 0 auto; padding: 0 28px; }
-    .tips { grid-template-columns: 1fr 1fr; column-gap: 40px; }
-    .tips__row { grid-template-columns: 160px 1fr; }
+    .tips { grid-template-columns: 1fr 1fr; }
+    /* línea central: borde derecho de la columna izquierda (alineada con el resto de láminas) */
+    .tip:nth-child(odd) { border-right: 1px solid var(--frame-line, var(--line-strong)); }
     .stay__grid { grid-template-columns: repeat(3, 1fr); }
   }
   @media (prefers-reduced-motion: reduce) { .route__plane { animation: none; left: 50%; } }
