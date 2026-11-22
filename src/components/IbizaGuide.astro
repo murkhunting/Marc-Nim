@@ -76,7 +76,7 @@ const catLabel = Object.fromEntries(spotCats.map((c) => [c.id, c.label]));
 
   /* isolation: el mapa (Leaflet usa z-index altos) queda por debajo de las líneas laterales del marco */
   .guide__mapwrap { position: relative; min-height: 0; z-index: 0; isolation: isolate; }
-  .guide__map { height: min(60vh, 110vw); min-height: 320px; background: var(--paper); }
+  .guide__map { height: min(60svh, 110vw); min-height: 320px; background: var(--paper); }
   .guide__map-ph { display: grid; place-items: center; height: 100%; color: var(--ink-3); }
   .guide__corner { position: absolute; left: 0; bottom: 0; z-index: 500; background: var(--paper); padding: 6px 10px; border-top: 1px solid var(--frame-line, var(--line-strong)); border-right: 1px solid var(--frame-line, var(--line-strong)); font-size: 10px; }
 
@@ -107,13 +107,13 @@ const catLabel = Object.fromEntries(spotCats.map((c) => [c.id, c.label]));
   .spot__go { position: absolute; right: var(--pad-x); bottom: 14px; text-decoration: none; border-bottom: 1px solid currentColor; }
   .spot__go:hover { color: var(--red); }
 
-  /* Móvil: pestañas + mapa + resultados ocupan una pantalla (100vh bajo el header).
+  /* Móvil: pestañas + mapa + resultados ocupan una pantalla (100svh bajo el header).
      Las pestañas y los resultados miden lo que necesitan y el mapa se adapta al alto que sobra */
   @media (max-width: 899px) {
     /* las pestañas llevan su propio borde superior (se solapa con el del header al encajar debajo) */
     :global(.guide .sheet-body) { border-bottom: 0; }
     .guide__filters { border-top: 1px solid var(--frame-line, var(--line-strong)); margin-top: -1px; }
-    .guide__body { height: calc(100vh - var(--nav-h)); grid-template-rows: minmax(0, 1fr) auto; }
+    .guide__body { height: calc(100svh - var(--nav-h)); grid-template-rows: minmax(0, 1fr) auto; }
     .guide__side { min-height: 0; }
     .guide__mapwrap { min-height: 0; }
     .guide__map { height: 100%; min-height: 0; }
@@ -122,7 +122,7 @@ const catLabel = Object.fromEntries(spotCats.map((c) => [c.id, c.label]));
   @media (min-width: 900px) {
     .guide__body { grid-template-columns: 1.35fr 1fr; align-items: start; }
     .guide__side {
-      position: sticky; top: var(--nav-h); height: calc(100vh - var(--nav-h));
+      position: sticky; top: var(--nav-h); height: calc(100svh - var(--nav-h));
       border-right: 1px solid var(--frame-line, var(--line-strong));
     }
     .guide__map { height: 100%; min-height: 0; }

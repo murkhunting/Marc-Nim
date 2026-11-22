@@ -101,7 +101,7 @@ const slides: (string | null)[] = photos.length ? photos : Array.from({ length: 
   .loc__slide img, .loc__ph { width: 100%; height: 100%; object-fit: cover; display: block; border: 0; }
   .loc__slides-bar { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: stretch; background: var(--paper); border-top: 1px solid var(--frame-line, var(--line-strong)); }
   .loc__arrow {
-    position: relative; display: grid; place-items: center; width: clamp(64px, 6vw, 84px); height: clamp(52px, 7vh, 68px);
+    position: relative; display: grid; place-items: center; width: clamp(64px, 6vw, 84px); height: clamp(52px, 7svh, 68px);
     padding: 0; background: none; border: 0; border-right: 1px solid var(--frame-line, var(--line-strong)); color: var(--ink);
     overflow: hidden; isolation: isolate; transition: color .4s var(--ease);
   }
@@ -151,7 +151,7 @@ const slides: (string | null)[] = photos.length ? photos : Array.from({ length: 
   /* Botón: mismo efecto que el de la hero */
   .place__btn {
     position: relative; display: flex; align-items: center; justify-content: flex-start; overflow: hidden; isolation: isolate;
-    min-height: clamp(64px, 9vh, 84px); padding: 0 var(--pad-x); border-top: 1px solid var(--frame-line, var(--line-strong));
+    min-height: clamp(64px, 9svh, 84px); padding: 0 var(--pad-x); border-top: 1px solid var(--frame-line, var(--line-strong));
     font-family: var(--f-futura); font-weight: 500; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase;
     text-decoration: none; color: var(--ink); transition: color .4s var(--ease);
   }
@@ -173,9 +173,9 @@ const slides: (string | null)[] = photos.length ? photos : Array.from({ length: 
   .place__photo :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
   /* Móvil: primero el texto (su propia fila) y debajo mapa + fotos, que ocupan exactamente una pantalla
-     (100vh bajo el header): 30 % el mapa de la isla, 70 % las fotos */
+     (100svh bajo el header): 30 % el mapa de la isla, 70 % las fotos */
   @media (max-width: 759px) {
-    .loc__split { --view: calc(100vh - var(--nav-h)); grid-template-rows: auto calc(var(--view) * .3) calc(var(--view) * .7); }
+    .loc__split { --view: calc(100svh - var(--nav-h)); grid-template-rows: auto calc(var(--view) * .3) calc(var(--view) * .7); }
     .loc__left { display: contents; }
     .loc__intro { min-height: 0; }
     .loc__mapbox { border-bottom: 1px solid var(--frame-line, var(--line-strong)); padding: 10px var(--pad-x); gap: 14px; min-height: 0; overflow: hidden; }
@@ -185,17 +185,17 @@ const slides: (string | null)[] = photos.length ? photos : Array.from({ length: 
     .loc__right { aspect-ratio: auto; min-height: 0; border-top: 0; }
   }
 
-  /* Móvil: cada lugar (ceremonia, celebración) ocupa una pantalla (100vh bajo el header):
+  /* Móvil: cada lugar (ceremonia, celebración) ocupa una pantalla (100svh bajo el header):
      el texto y el botón con su altura y la foto se queda con todo el alto que sobra */
   @media (max-width: 759px) {
     /* en móvil la foto va siempre arriba y el texto debajo, en las dos */
-    .place { --view: calc(100vh - var(--nav-h)); height: var(--view); grid-template-rows: minmax(0, 1fr) auto; }
+    .place { --view: calc(100svh - var(--nav-h)); height: var(--view); grid-template-rows: minmax(0, 1fr) auto; }
     .place .place__photo { order: -1; border-bottom: 1px solid var(--frame-line, var(--line-strong)); }
     /* sin bordes propios en el texto: la línea entre foto y texto la pone la foto y la de abajo, el siguiente lugar (nada de dobles) */
     .place__text, .place--rev .place__text { border-top: 0; border-bottom: 0; }
     .place__photo { aspect-ratio: auto; min-height: 0; }
-    .place__info { padding: clamp(14px, 2.6vh, 28px) var(--pad-x); gap: 6px; }
-    .place__name { font-size: clamp(1.6rem, 4.6vh, 2.4rem); margin-top: 2px; }
+    .place__info { padding: clamp(14px, 2.6svh, 28px) var(--pad-x); gap: 6px; }
+    .place__name { font-size: clamp(1.6rem, 4.6svh, 2.4rem); margin-top: 2px; }
     .place__txt { font-size: .95rem; line-height: 1.35; }
     .place__addr { font-size: 13px; }
   }
@@ -205,7 +205,7 @@ const slides: (string | null)[] = photos.length ? photos : Array.from({ length: 
   }
 
   @media (min-width: 760px) {
-    .loc__split { grid-template-columns: 1fr 1fr; height: calc(100vh - var(--nav-h)); min-height: 560px; }
+    .loc__split { grid-template-columns: 1fr 1fr; height: calc(100svh - var(--nav-h)); min-height: 560px; }
     .loc__right { aspect-ratio: auto; border-top: 0; }
     /* línea central: borde derecho de la columna izquierda, igual que en las filas de abajo */
     .loc__left { border-right: 1px solid var(--frame-line, var(--line-strong)); }
@@ -213,8 +213,8 @@ const slides: (string | null)[] = photos.length ? photos : Array.from({ length: 
     .loc__mapbox { overflow: hidden; }
     .loc__island-map { height: 100%; width: auto; max-width: 100%; }
     .loc__island-map :global(.plan-svg) { height: 100%; }
-    /* Dos filas de 50vh: texto + foto, y debajo foto + texto (invertido) */
-    .place { grid-template-columns: 1fr 1fr; height: 50vh; min-height: 380px; }
+    /* Dos filas de 50svh: texto + foto, y debajo foto + texto (invertido) */
+    .place { grid-template-columns: 1fr 1fr; height: 50svh; min-height: 380px; }
     .place__text, .place--rev .place__text { border-top: 0; border-bottom: 0; }
     .place:not(.place--rev) .place__text { border-right: 1px solid var(--frame-line, var(--line-strong)); }
     /* la línea central cae siempre en el mismo sitio: borde derecho de la columna izquierda (texto o foto) */

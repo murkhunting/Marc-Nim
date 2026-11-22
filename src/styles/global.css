@@ -45,7 +45,7 @@
 
 /* ── Base ───────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-padding-top: var(--nav-h); overflow-x: clip; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: var(--nav-h); overflow-x: clip; background: var(--paper); }
 main { overflow-x: clip; }
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }

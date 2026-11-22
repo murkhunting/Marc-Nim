@@ -67,7 +67,7 @@ import Stamp from './Stamp.astro';
     background: color-mix(in srgb, var(--paper) 85%, white);
     border-bottom: 1px solid var(--frame-line, var(--line-strong));
   }
-  .cell { position: relative; padding: clamp(14px, min(2.4vw, 3.6vh), 36px); border-bottom: 1px solid var(--line-strong); }
+  .cell { position: relative; padding: clamp(14px, min(2.4vw, 3.6svh), 36px); border-bottom: 1px solid var(--line-strong); }
   .cell--top { display: flex; justify-content: space-between; gap: 10px; padding-block: 12px; }
   .cell--top b { font-weight: 500; }
   .hero__coords { color: var(--ink-2); }
@@ -114,7 +114,7 @@ import Stamp from './Stamp.astro';
   /* Botón inferior: mismo efecto que los botones del header */
   .cell--scroll {
     position: relative; display: flex; align-items: center; justify-content: flex-start;
-    min-height: clamp(64px, 9vh, 84px); padding: 0 clamp(16px, 2.4vw, 36px); border-bottom: 0;
+    min-height: clamp(64px, 9svh, 84px); padding: 0 clamp(16px, 2.4vw, 36px); border-bottom: 0;
     font-family: var(--f-futura); font-weight: 500; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase;
     text-decoration: none; overflow: hidden; isolation: isolate;
     transition: color .4s var(--ease);
@@ -139,19 +139,19 @@ import Stamp from './Stamp.astro';
     .hero__coords { font-size: 10px; }
   }
 
-  /* Móvil / tablet vertical: el hero mide exactamente la pantalla (100vh, header incluido).
+  /* Móvil / tablet vertical: el hero mide exactamente la pantalla (100svh, header incluido).
      La foto se queda con el alto que sobra y el título se adapta al alto disponible. */
   @media (max-width: 899px) {
-    .hero { min-height: 100vh; }
+    .hero { min-height: 100svh; }
     .hero__sheet { grid-template-rows: auto auto minmax(140px, 1fr) auto auto; }
     .cell--photo { min-height: 0; }
-    .hero__names { font-size: clamp(3rem, min(24vw, 11.5vh), 9.6rem); }
-    .hero__count b { font-size: clamp(1.6rem, min(6vw, 4.6vh), 3.4rem); }
-    .cell--scroll { min-height: clamp(52px, 8vh, 72px); }
+    .hero__names { font-size: clamp(3rem, min(24vw, 11.5svh), 9.6rem); }
+    .hero__count b { font-size: clamp(1.6rem, min(6vw, 4.6svh), 3.4rem); }
+    .cell--scroll { min-height: clamp(52px, 8svh, 72px); }
   }
   @media (max-width: 899px) and (max-height: 700px) {
     /* iPhone SE y similares: el título cede espacio a la foto */
-    .hero__names { font-size: clamp(2.6rem, min(20vw, 8vh), 9.6rem); line-height: .95; }
+    .hero__names { font-size: clamp(2.6rem, min(20vw, 8svh), 9.6rem); line-height: .95; }
     .cell { padding: 12px; }
     .cell--count { padding: 0; }
     .hero__count-title { padding: 10px 16px; }
@@ -159,7 +159,7 @@ import Stamp from './Stamp.astro';
 
   @media (min-width: 900px) {
     /* El hero ocupa exactamente la pantalla al entrar */
-    .hero { min-height: 100vh; }
+    .hero { min-height: 100svh; }
     .hero__sheet {
       grid-template-columns: 1.2fr 1fr;
       grid-template-rows: auto 1fr auto auto;
@@ -177,7 +177,7 @@ import Stamp from './Stamp.astro';
     .hero__dim { display: block; }
     .hero__dim--v { right: 10px; top: 50%; writing-mode: vertical-rl; }
     .hero__dim--h { left: 50%; top: 10px; transform: translateX(-50%); }
-    .hero__names { font-size: clamp(4rem, min(12vw, 22vh), 13rem); }
-    .hero__count b { font-size: clamp(1.9rem, min(3.6vw, 6.5vh), 3.4rem); }
+    .hero__names { font-size: clamp(4rem, min(12vw, 22svh), 13rem); }
+    .hero__count b { font-size: clamp(1.9rem, min(3.6vw, 6.5svh), 3.4rem); }
   }
 </style>
