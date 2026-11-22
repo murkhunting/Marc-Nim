@@ -51,15 +51,13 @@ const lamina = (id: string) => { const i = nav.filter((x) => x.id !== 'inicio' &
 </div>
 
 <style>
+  /* El color de fondo va en el propio elemento fijo (no solo en la barra de dentro): Safari y Brave en iPhone
+     toman el color del elemento fijo pegado arriba para pintar la zona de la hora y el notch. Si es transparente,
+     esa zona deja ver el contenido que pasa por debajo. */
   .nav {
     position: fixed; inset: 0 0 auto 0; z-index: 900;
+    background: var(--paper);
     transition: transform .5s var(--ease);
-  }
-  /* En algunos navegadores móviles (Brave, Safari) la zona de arriba, bajo la hora y el notch, queda por encima
-     del header y deja ver el contenido: este "tapón" prolonga el color del header hacia arriba para cubrirla */
-  .nav::before {
-    content: ''; position: absolute; left: 0; right: 0; bottom: 100%; height: 320px;
-    background: var(--paper); pointer-events: none;
   }
   .nav__bar {
     height: var(--nav-h);

@@ -29,6 +29,7 @@ const endpoint = import.meta.env.PUBLIC_RSVP_ENDPOINT ?? '';
                 <span class="env__rule"></span>
                 <span class="mono env__place">Marc &amp; Nimrha · Ibiza</span>
               </div>
+              <span class="env__hint">Pulsa para abrir ↗</span>
             </div>
             <!-- Cara trasera: solapa, bolsillo y lacre -->
             <div class="env__face env__face--back">
@@ -241,6 +242,9 @@ const endpoint = import.meta.env.PUBLIC_RSVP_ENDPOINT ?? '';
     text-shadow: 0 1px 0 rgba(255, 255, 255, .7); padding-top: .1em;
   }
   .env__mono small { font-size: .8em; margin: 0 .06em; font-weight: 400; }
+  /* Móvil (sin ratón): aviso "Pulsa para abrir" en la esquina inferior izquierda del sobre, igual que el de la foto del hero */
+  .env__hint { display: none; position: absolute; left: 12px; bottom: 12px; padding: 9px 12px; background: rgba(255, 255, 255, .68); -webkit-backdrop-filter: blur(14px) saturate(1.6); backdrop-filter: blur(14px) saturate(1.6); color: var(--ink); border: 1px solid rgba(23, 25, 29, .2); border-radius: 0; font-family: var(--f-futura); font-weight: 500; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; line-height: 1; }
+  @media (hover: none) { .env__hint { display: block; } }
   .env__hit { position: absolute; inset: 0; z-index: 6; display: block; background: none; border: 0; padding: 0; cursor: pointer; }
   /* La tarjeta mide siempre lo mismo (la altura del paso más alto, la fija el JS en --card-h) */
   .form-card {

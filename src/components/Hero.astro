@@ -32,7 +32,7 @@ import Stamp from './Stamp.astro';
         <img src="/img/pareja_fondo_transparente.webp" alt="Marc y Nimrha abrazados" width="1149" height="1369" fetchpriority="high" />
       </figure>
       <span class="hero__stamp" data-hero-stamp><Stamp id="hero" /></span>
-      <span class="hero__hint mono" data-hero-hint aria-hidden="true">Pulsa para aprobar ↓</span>
+      <span class="hero__hint" data-hero-hint aria-hidden="true">Pulsa para aprobar ↓</span>
       <span class="hero__dim hero__dim--v mono" aria-hidden="true">865</span>
       <span class="hero__dim hero__dim--h mono" aria-hidden="true">680</span>
     </div>
@@ -93,7 +93,8 @@ import Stamp from './Stamp.astro';
   }
   .cell--photo.is-approved .hero__stamp { opacity: 1; transform: rotate(-8deg); }
 
-  .hero__hint { display: none; position: absolute; left: 12px; bottom: 12px; background: var(--ink); color: var(--paper); padding: 7px 12px; border-radius: 999px; }
+  /* Aviso táctil: cuadrado, de cristal esmerilado y texto oscuro (mismo estilo que la etiqueta del cursor) */
+  .hero__hint { display: none; position: absolute; left: 12px; bottom: 12px; padding: 9px 12px; background: rgba(255, 255, 255, .68); -webkit-backdrop-filter: blur(14px) saturate(1.6); backdrop-filter: blur(14px) saturate(1.6); color: var(--ink); border: 1px solid rgba(23, 25, 29, .2); border-radius: 0; font-family: var(--f-futura); font-weight: 500; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; line-height: 1; }
   @media (hover: none) { .hero__hint { display: block; } }
   .cell--photo.is-approved .hero__hint { display: none; }
 
