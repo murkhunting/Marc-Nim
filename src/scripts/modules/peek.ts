@@ -23,6 +23,7 @@ export function initPeek() {
   let visible = false;
   let hideTimer = 0;
   let lastAuto = 0;
+  let lastSay = 0;
   let ready = false;
   const seen = new Set<string>();
 
@@ -63,24 +64,41 @@ export function initPeek() {
         const id = sec.dataset.section!;
         if (!ready || seen.has(id) || !lines[id]) return;
         if (Date.now() - lastAuto < 5000) return;
-        seen.add(id); lastAuto = Date.now();
+        seen.add(id); lastAuto = Date.now(); lastSay = Date.now();
         show(lines[id]);
       },
     });
   });
 
-  // Hover (escritorio) / tap (móvil) en zonas marcadas
+  // Móvil: no hay hover, así que Orión comenta SOLO al hacer scroll: cada vez que una zona con comentario
+  // llega a la franja central de la pantalla, sale con su frase (y se esconde solo).
+  const io = !isFine && 'IntersectionObserver' in window
+    ? new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (!en.isIntersecting || !ready) return;
+          const msg = (en.target as HTMLElement).dataset.cuquiHover;
+          if (!msg) return;
+          if (Date.now() - lastSay < 2200) return; // sin solaparse con el comentario anterior
+          lastSay = Date.now();
+          show(msg, 3800);
+        });
+      }, { rootMargin: '-36% -18% -36% -18%', threshold: 0 })
+    : null;
+
+  // Hover (escritorio) / aparición con scroll (móvil) en zonas marcadas
   document.querySelectorAll<HTMLElement>('[data-cuqui-hover]').forEach((el) => {
     const msg = el.dataset.cuquiHover!;
     if (isFine) {
       el.addEventListener('pointerenter', () => show(msg, 0));
       el.addEventListener('pointerleave', () => { window.clearTimeout(hideTimer); hideTimer = window.setTimeout(hide, 900); });
     } else {
+      io?.observe(el);
       let last = 0;
       el.addEventListener('click', (e) => {
         if ((e.target as HTMLElement).closest('a, button, input, label')) return;
         if (Date.now() - last < 600) return;
         last = Date.now();
+        lastSay = Date.now();
         show(msg, 3500);
       });
     }

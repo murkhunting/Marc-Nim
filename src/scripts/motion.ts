@@ -4,6 +4,8 @@ import { SplitText } from 'gsap/SplitText';
 import Lenis from 'lenis';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
+// en móvil, la barra del navegador que aparece y desaparece no debe recalcular todos los disparadores
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 export const reduce =
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;

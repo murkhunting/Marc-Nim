@@ -170,5 +170,13 @@ const zones = [
     .tip:nth-child(odd) { border-right: 1px solid var(--frame-line, var(--line-strong)); }
     .stay__grid { grid-template-columns: repeat(3, 1fr); }
   }
+  /* Móvil: solo los códigos y los aviones, para que PTY · MAD · IBZ (o TÚ · MAD · IBZ) quepa siempre dentro del recuadro */
+  @media (max-width: 639px) {
+    .route { gap: 6px; }
+    .route__code { font-size: clamp(1.9rem, 9.5vw, 2.8rem); }
+    .route__stop, .route__leg { min-width: 0; }
+    .route__leg { min-width: 20px; }
+    .route__city, .route__time { display: none; }
+  }
   @media (prefers-reduced-motion: reduce) { .route__plane { animation: none; left: 50%; } }
 </style>

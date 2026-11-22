@@ -86,11 +86,11 @@ const icons: Record<string, string> = {
   <!-- Transporte el día de la boda: esquema de línea (ida, traslado y vuelta al mismo punto) -->
   <div class="bus">
     <div class="bus__head">
-      <div class="bus__intro">
+      <div class="bus__titlebar">
         <h3 class="bus__title">Transporte el día de la boda</h3>
-        <p class="bus__sub">Para los que venís de fuera, nosotros nos encargamos de llevaros y traeros. Un autobús saldrá de Santa Eulària des Riu, os llevará a la iglesia, después a Can Curreu y, a las 2 de la madrugada, os devolverá al mismo punto. Sin preocuparos por aparcar ni por quién conduce.</p>
+        <svg class="bus__icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 24V8a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v16M6 24h20M6 15h20M10 4v11M22 4v11"/><circle cx="10.5" cy="20" r="1.4"/><circle cx="21.5" cy="20" r="1.4"/><path d="M8 24v3h3v-3M21 24v3h3v-3"/></svg>
       </div>
-      <svg class="bus__icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 24V8a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v16M6 24h20M6 15h20M10 4v11M22 4v11"/><circle cx="10.5" cy="20" r="1.4"/><circle cx="21.5" cy="20" r="1.4"/><path d="M8 24v3h3v-3M21 24v3h3v-3"/></svg>
+      <p class="bus__sub">Para los que venís de fuera, nosotros nos encargamos de llevaros y traeros. Un autobús saldrá de Santa Eulària des Riu, os llevará a la iglesia, después a Can Curreu y, a las 2 de la madrugada, os devolverá al mismo punto. Sin preocuparos por aparcar ni por quién conduce.</p>
     </div>
 
     <div class="bus__route" data-bus-route>
@@ -171,17 +171,16 @@ const icons: Record<string, string> = {
   }
   /* ── Transporte el día de la boda ─────────────────────────── */
   .bus { border-bottom: 1px solid var(--frame-line, var(--line-strong)); }
-  .bus__head {
-    display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start;
-    padding: clamp(28px, 4vw, 48px) var(--pad-x); border-bottom: 1px solid var(--line-strong);
-  }
+  .bus__head { padding: clamp(28px, 4vw, 48px) var(--pad-x); border-bottom: 1px solid var(--line-strong); }
+  /* el icono va en la línea del título */
+  .bus__titlebar { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
   /* icono grande, en negro y sin fondo */
   .bus__icon {
-    width: clamp(84px, 11vw, 132px); height: clamp(84px, 11vw, 132px);
-    fill: none; stroke: var(--ink); stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round;
+    flex: none; width: clamp(52px, 8vw, 96px); height: clamp(52px, 8vw, 96px);
+    fill: none; stroke: var(--ink); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round;
   }
   .bus__title { margin: 0; font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 500; text-transform: uppercase; line-height: 1; }
-  .bus__sub { margin: 14px 0 0; color: var(--ink-2); max-width: 62ch; }
+  .bus__sub { margin: 14px 0 0; color: var(--ink-2); max-width: none; }
 
   /* Paradas: celdas pegadas con bordes compartidos; la línea del recorrido las une por arriba */
   .bus__route { position: relative; isolation: isolate; }

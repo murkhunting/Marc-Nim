@@ -86,18 +86,25 @@ function itinerary() {
     .to(skyEl, { '--bg': '#121417', '--fg': '#ebebed', '--muted': 'rgba(235,235,237,.62)', '--ln': 'rgba(235,235,237,.22)', ease: 'none', duration: 1.2 })
     .to(stars, { opacity: 1, ease: 'none', duration: 0.8 }, '<0.4');
 
-  gsap.fromTo(fill, { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: body, start: 'top 55%', end: 'bottom 55%', scrub: true } });
-  gsap.fromTo(orb, { y: 0 }, {
-    y: () => rail.offsetHeight - orb.offsetHeight, ease: 'none',
-    scrollTrigger: {
-      trigger: body, start: 'top 55%', end: 'bottom 55%', scrub: true, invalidateOnRefresh: true,
-      onUpdate: (s) => {
-        const p = gsap.utils.clamp(0, 1, (s.progress - 0.5) / 0.2);
-        gsap.set(sun, { opacity: 1 - p, rotate: s.progress * 360, transformOrigin: '50% 50%' });
-        gsap.set(moon, { opacity: p });
-      },
-    },
-  });
+  // Sol / luna y línea de progreso: se calculan EN VIVO con el alto real de la ventana en cada scroll.
+  // Así, cuando en el móvil la barra del navegador se esconde o aparece (cambia la altura), el icono nunca
+  // se queda con una posición vieja ni desaparece. Va anclado al 55 % de la pantalla, dentro del riel.
+  const place = () => {
+    const vh = window.innerHeight;
+    const railR = rail.getBoundingClientRect();
+    const max = Math.max(0, railR.height - orb.offsetHeight);
+    const anchor = Math.max(navH() + orb.offsetHeight, vh * 0.55);          // siempre por debajo del header
+    const y = gsap.utils.clamp(0, max, anchor - railR.top - orb.offsetHeight / 2);
+    gsap.set(orb, { y });
+    gsap.set(fill, { scaleY: railR.height ? gsap.utils.clamp(0, 1, (y + orb.offsetHeight / 2) / railR.height) : 0 });
+    const prog = max ? y / max : 0;
+    const p = gsap.utils.clamp(0, 1, (prog - 0.5) / 0.2);
+    gsap.set(sun, { opacity: 1 - p, rotate: prog * 360, transformOrigin: '50% 50%' });
+    gsap.set(moon, { opacity: p });
+  };
+  ScrollTrigger.create({ trigger: body, start: 'top bottom', end: 'bottom top', onUpdate: place, onRefresh: place });
+  window.addEventListener('resize', place);
+  place();
 
   sec.querySelectorAll<HTMLElement>('[data-iti-item]').forEach((item) => {
     const st = { trigger: item, start: 'top 80%', once: true };
